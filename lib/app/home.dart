@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'checkins.dart';
-import 'exposed_sites.dart';
+import 'sites.dart';
+import 'visits.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({
@@ -20,13 +20,13 @@ class HomePage extends StatelessWidget {
           bottom: TabBar(
             tabs: [
               Tab(icon: Icon(Icons.directions_walk)),
-              Tab(icon: Icon(Icons.notification_important_outlined)),
+              Tab(icon: Icon(Icons.place_outlined)),
             ],
           ),
         ),
         body: TabBarView(
           children: [
-            CheckinsPage(),
+            VisitsPage(),
             ExposedSitesPage(),
           ],
         ),
