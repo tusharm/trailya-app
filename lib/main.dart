@@ -1,56 +1,72 @@
+import 'package:amilinked/app/store/db_helper.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
 import 'app/home.dart';
+import 'app/store/site.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp();
+
+  // Set the background messaging handler early on, as a named top-level function
+  await setupMessaging();
+
   runApp(App());
 }
 
-class App extends StatefulWidget {
+Future<void> setupMessaging() async {
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+    print('Got a message whilst in the foreground!');
+    print('Message data: ${message.data}');
+
+    if (message.notification != null) {
+      print('Message also contained a notification: ${message.notification}');
+    }
+
+    await handleSitesUpdateMessage(message);
+  });
+
+  await FirebaseMessaging.instance.subscribeToTopic('test');
+}
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  print('Got a message whilst in the background!');
+  print('Message data: ${message.data}');
+
+  if (message.notification != null) {
+    print('Message also contained a notification: ${message.notification}');
+  }
+
+  await handleSitesUpdateMessage(message);
+}
+
+Future<void> handleSitesUpdateMessage(RemoteMessage message) async {
+  await DataBaseHelper().persist(Site(
+    id: message.data['id'],
+    suburb: message.data['Suburb'],
+    name: message.data['Site_title'],
+    address: message.data['Site_streetaddress'],
+    state: message.data['Site_state'],
+    postcode: message.data['Site_postcode'],
+    exposureDate: message.data['Exposure_date_dtm'],
+    exposureStartTime: message.data['Exposure_time_start_24'],
+    exposureEndTime: message.data['Exposure_time_end_24'],
+  ));
+}
+
+class App extends StatelessWidget {
   const App({Key? key}) : super(key: key);
 
   @override
-  _AppState createState() => _AppState();
-}
-
-class _AppState extends State<App> {
-  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
-
-  @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _initialization,
-      builder: (context, snapshot) {
-        return MaterialApp(
-          title: 'Am I Linked?',
-          theme: new ThemeData(primarySwatch: Colors.indigo),
-          home: _buildContent(context, snapshot),
-        );
-      },
-    );
-  }
-
-  Widget _buildContent(BuildContext context, AsyncSnapshot<Object?> snapshot) {
-    if (snapshot.hasError) {
-      return Scaffold(
-        body: Center(
-          child: Text('Error initializing Firebase'),
-        ),
-      );
-    }
-
-    // Once complete, show your application
-    if (snapshot.connectionState == ConnectionState.done) {
-      return HomePage();
-    }
-
-    // Otherwise, show something whilst waiting for initialization to complete
-    return Scaffold(
-      body: Center(
-        child: CircularProgressIndicator(),
-      ),
-    );
+    return MaterialApp(
+        title: 'Am I Linked?',
+        theme: new ThemeData(primarySwatch: Colors.indigo),
+        home: HomePage());
   }
 }
