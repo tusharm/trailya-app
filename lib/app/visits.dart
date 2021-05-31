@@ -1,8 +1,9 @@
-import 'package:amilinked/app/widgets/empty.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_place/google_place.dart' as places;
 import 'package:location/location.dart';
+
+import 'widgets/empty.dart';
 
 class VisitsPage extends StatefulWidget {
   const VisitsPage({Key? key}) : super(key: key);

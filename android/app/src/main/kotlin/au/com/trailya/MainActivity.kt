@@ -1,4 +1,4 @@
-package com.example.amilinked
+package au.com.trailya
 
 import io.flutter.embedding.android.FlutterActivity
 

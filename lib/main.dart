@@ -1,11 +1,11 @@
-import 'package:amilinked/app/store/db_helper.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:trailya/services/store/db_helper.dart';
+import 'package:trailya/services/store/site.dart';
 
 import 'app/home.dart';
-import 'app/store/site.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -67,7 +67,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Am I Linked?',
+        title: 'trailya',
         theme: new ThemeData(primarySwatch: Colors.indigo),
         home: HomePage());
   }

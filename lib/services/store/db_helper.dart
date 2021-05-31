@@ -19,10 +19,7 @@ class DataBaseHelper {
 
   Future<Database> _initDB() async {
     String path = join(await getDatabasesPath(), dbName);
-    final db = await openDatabase(path, version: 1, onCreate: _onCreate);
-    print('DB path: $path');
-    print('DB : $db');
-    return db;
+    return await openDatabase(path, version: 1, onCreate: _onCreate);
   }
 
   void _onCreate(Database db, int newVersion) async {

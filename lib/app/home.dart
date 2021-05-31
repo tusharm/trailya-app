@@ -15,7 +15,7 @@ class HomePage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Center(
-            child: Text('Am I Linked?'),
+            child: Text('TrailYa'),
           ),
           bottom: TabBar(
             tabs: [

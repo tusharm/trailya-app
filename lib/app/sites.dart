@@ -1,7 +1,7 @@
-import 'package:amilinked/app/store/db_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:trailya/services/store/db_helper.dart';
+import 'package:trailya/services/store/site.dart';
 
-import 'store/site.dart';
 
 class ExposedSitesPage extends StatelessWidget {
   const ExposedSitesPage({Key? key}) : super(key: key);
