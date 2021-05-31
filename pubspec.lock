@@ -104,6 +104,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_dotenv:
+    dependency: "direct main"
+    description:
+      name: flutter_dotenv
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.0.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -114,27 +121,20 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  geolocator:
+  google_place:
     dependency: "direct main"
     description:
-      name: geolocator
+      name: google_place
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "7.0.3"
-  geolocator_platform_interface:
+    version: "0.4.0"
+  http:
     dependency: transitive
     description:
-      name: geolocator_platform_interface
+      name: http
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.2"
-  geolocator_web:
-    dependency: transitive
-    description:
-      name: geolocator_web
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.3"
+    version: "0.13.3"
   http_parser:
     dependency: transitive
     description:
@@ -191,6 +191,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.8.0"
+  pedantic:
+    dependency: transitive
+    description:
+      name: pedantic
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.11.0"
   plugin_platform_interface:
     dependency: transitive
     description:

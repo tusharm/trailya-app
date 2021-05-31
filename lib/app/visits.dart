@@ -1,6 +1,7 @@
 import 'package:amilinked/app/widgets/empty.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:google_place/google_place.dart' as places;
 import 'package:location/location.dart';
 
 class VisitsPage extends StatefulWidget {
@@ -12,12 +13,15 @@ class VisitsPage extends StatefulWidget {
 
 class _VisitsPageState extends State<VisitsPage> {
   final location = Location();
+  late places.GooglePlace googlePlace;
+
   late final bool locationPermitted;
-  late List<LocationData> locations;
+  late List<LocationWithPlaces> locations;
 
   @override
   void initState() {
-    super.initState();
+    googlePlace = places.GooglePlace(dotenv.env['PLACES_API_KEY']!);
+
     initLocation().then((allowed) {
       setState(() {
         locations = List.empty(growable: true);
@@ -25,10 +29,11 @@ class _VisitsPageState extends State<VisitsPage> {
 
         if (locationPermitted) {
           location.changeSettings(interval: 10000, distanceFilter: 1);
-          location.enableBackgroundMode(enable: true);
+          // location.enableBackgroundMode(enable: true);
         }
       });
     });
+    super.initState();
   }
 
   @override
@@ -40,30 +45,28 @@ class _VisitsPageState extends State<VisitsPage> {
       );
     }
 
+    Stream<LocationWithPlaces> placesStream =
+        location.onLocationChanged.asyncMap((loc) async {
+      return await locationWithPlaces(loc);
+    });
+
     return StreamBuilder(
-      stream: location.onLocationChanged,
-      builder: (context, AsyncSnapshot<LocationData> snapshot) {
+      stream: placesStream,
+      builder: (context, AsyncSnapshot<LocationWithPlaces> snapshot) {
         if (snapshot.hasData) {
           locations.add(snapshot.data!);
 
           return ListView.builder(
             itemCount: locations.length,
             itemBuilder: (context, index) {
-              LocationData loc = locations.elementAt(index);
-
-              final displacement = (index == 0) ? 0.0 : Geolocator
-                  .distanceBetween(loc.latitude!, loc.longitude!, locations
-                  .elementAt(index - 1)
-                  .latitude!, locations
-                  .elementAt(index - 1)
-                  .longitude!).roundToDouble();
+              LocationWithPlaces loc = locations.elementAt(index);
 
               return ListTile(
                 leading: Text('${index + 1}'),
-                title: Text('lat: ${loc.latitude}, long: ${loc.longitude}'),
-                subtitle: Text(
-                    'moved ${displacement} m, ${DateTime.fromMillisecondsSinceEpoch(
-                        loc.time!.toInt())}'),
+                title: Text(
+                    'lat: ${loc.loc.latitude}, long: ${loc.loc.longitude}'),
+                subtitle:
+                    Text('${loc.nearbyPlaces.map((e) => e.name).join(",")}'),
               );
             },
           );
@@ -81,4 +84,27 @@ class _VisitsPageState extends State<VisitsPage> {
     final PermissionStatus status = await location.requestPermission();
     return status == PermissionStatus.granted;
   }
+
+  Future<LocationWithPlaces> locationWithPlaces(LocationData loc) async {
+    places.NearBySearchResponse? results =
+        await googlePlace.search.getNearBySearch(
+      places.Location(lat: loc.latitude, lng: loc.longitude),
+      10,
+    );
+
+    return new LocationWithPlaces(
+      loc: loc,
+      nearbyPlaces: results == null ? List.empty() : results.results!,
+    );
+  }
+}
+
+class LocationWithPlaces {
+  final LocationData loc;
+  final List<places.SearchResult> nearbyPlaces;
+
+  LocationWithPlaces({
+    required this.loc,
+    required this.nearbyPlaces,
+  });
 }
