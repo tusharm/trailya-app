@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:google_place/google_place.dart' as places;
-import 'package:location/location.dart';
+import 'package:trailya/services/location_tracker.dart';
 
 import 'widgets/empty.dart';
 
@@ -13,25 +11,16 @@ class VisitsPage extends StatefulWidget {
 }
 
 class _VisitsPageState extends State<VisitsPage> {
-  final location = Location();
-  late places.GooglePlace googlePlace;
+  final LocationTracker tracker = LocationTracker();
 
   late final bool locationPermitted;
-  late List<LocationWithPlaces> locations;
+  late final List<NearbyPlaces> locations = List.empty(growable: true);
 
   @override
   void initState() {
-    googlePlace = places.GooglePlace(dotenv.env['PLACES_API_KEY']!);
-
-    initLocation().then((allowed) {
+    tracker.initialize().then((allowed) {
       setState(() {
-        locations = List.empty(growable: true);
         locationPermitted = allowed;
-
-        if (locationPermitted) {
-          location.changeSettings(interval: 10000, distanceFilter: 1);
-          // location.enableBackgroundMode(enable: true);
-        }
       });
     });
     super.initState();
@@ -39,73 +28,48 @@ class _VisitsPageState extends State<VisitsPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (!locationPermitted) {
-      return EmptyContent(
-        title: 'Location tracking disabled',
-        message: 'Manually add places you visited.',
-      );
-    }
-
-    Stream<LocationWithPlaces> placesStream =
-        location.onLocationChanged.asyncMap((loc) async {
-      return await locationWithPlaces(loc);
-    });
-
-    return StreamBuilder(
-      stream: placesStream,
-      builder: (context, AsyncSnapshot<LocationWithPlaces> snapshot) {
-        if (snapshot.hasData) {
-          locations.add(snapshot.data!);
-
-          return ListView.builder(
-            itemCount: locations.length,
-            itemBuilder: (context, index) {
-              LocationWithPlaces loc = locations.elementAt(index);
-
-              return ListTile(
-                leading: Text('${index + 1}'),
-                title: Text(
-                    'lat: ${loc.loc.latitude}, long: ${loc.loc.longitude}'),
-                subtitle:
-                    Text('${loc.nearbyPlaces.map((e) => e.name).join(",")}'),
-              );
-            },
+    return FutureBuilder(
+      future: tracker.initialize(),
+      builder: (context, AsyncSnapshot<bool> snapshot) {
+        if (!snapshot.hasData || !snapshot.data!) {
+          return EmptyContent(
+            title: 'Location tracking disabled',
+            message: 'Manually add visited places',
           );
         }
 
-        return EmptyContent(title: 'Waiting for locations..', message: '');
+        return StreamBuilder(
+          stream: tracker.visits(),
+          builder: (context, AsyncSnapshot<NearbyPlaces> snapshot) {
+            if (!snapshot.hasData) {
+              return EmptyContent(
+                title: 'Waiting for locations..',
+                message: '',
+              );
+            }
+
+            locations.add(snapshot.data!);
+            return _buildContent();
+          },
+        );
       },
     );
   }
 
-  Future<bool> initLocation() async {
-    final enabled = await location.requestService();
-    if (!enabled) return false;
+  ListView _buildContent() {
+    return ListView.builder(
+      itemCount: locations.length,
+      itemBuilder: (context, index) {
+        NearbyPlaces vic = locations.elementAt(index);
 
-    final PermissionStatus status = await location.requestPermission();
-    return status == PermissionStatus.granted;
-  }
-
-  Future<LocationWithPlaces> locationWithPlaces(LocationData loc) async {
-    places.NearBySearchResponse? results =
-        await googlePlace.search.getNearBySearch(
-      places.Location(lat: loc.latitude, lng: loc.longitude),
-      10,
-    );
-
-    return new LocationWithPlaces(
-      loc: loc,
-      nearbyPlaces: results == null ? List.empty() : results.results!,
+        return ListTile(
+          leading: Text('${index + 1}'),
+          isThreeLine: true,
+          title: Text('lat/lng: ${vic.loc.latitude},${vic.loc.longitude} at '),
+          subtitle: Text(
+              '${vic.nearby.map((e) => e.name).join(",")}  at ${DateTime.fromMillisecondsSinceEpoch(vic.loc.time!.toInt()).toIso8601String()}'),
+        );
+      },
     );
   }
-}
-
-class LocationWithPlaces {
-  final LocationData loc;
-  final List<places.SearchResult> nearbyPlaces;
-
-  LocationWithPlaces({
-    required this.loc,
-    required this.nearbyPlaces,
-  });
 }
