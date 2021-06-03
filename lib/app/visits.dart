@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:trailya/services/location_tracker.dart';
+import 'package:intl/intl.dart';
+import 'package:trailya/services/track/location_tracker.dart';
+import 'package:trailya/services/track/visit.dart';
 
 import 'widgets/empty.dart';
 
@@ -13,18 +15,7 @@ class VisitsPage extends StatefulWidget {
 class _VisitsPageState extends State<VisitsPage> {
   final LocationTracker tracker = LocationTracker();
 
-  late final bool locationPermitted;
-  late final List<NearbyPlaces> locations = List.empty(growable: true);
-
-  @override
-  void initState() {
-    tracker.initialize().then((allowed) {
-      setState(() {
-        locationPermitted = allowed;
-      });
-    });
-    super.initState();
-  }
+  late final List<Visit> locations = List.empty(growable: true);
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +31,7 @@ class _VisitsPageState extends State<VisitsPage> {
 
         return StreamBuilder(
           stream: tracker.visits(),
-          builder: (context, AsyncSnapshot<NearbyPlaces> snapshot) {
+          builder: (context, AsyncSnapshot<Visit?> snapshot) {
             if (!snapshot.hasData) {
               return EmptyContent(
                 title: 'Waiting for locations..',
@@ -60,16 +51,19 @@ class _VisitsPageState extends State<VisitsPage> {
     return ListView.builder(
       itemCount: locations.length,
       itemBuilder: (context, index) {
-        NearbyPlaces vic = locations.elementAt(index);
+        Visit nearBy = locations.elementAt(index);
 
         return ListTile(
-          leading: Text('${index + 1}'),
           isThreeLine: true,
-          title: Text('lat/lng: ${vic.loc.latitude},${vic.loc.longitude} at '),
-          subtitle: Text(
-              '${vic.nearby.map((e) => e.name).join(",")}  at ${DateTime.fromMillisecondsSinceEpoch(vic.loc.time!.toInt()).toIso8601String()}'),
+          title: Text(nearBy.nearby.name ?? 'Unknown'),
+          subtitle: Text('${nearBy.nearby.vicinity ?? 'Unknown'}\n'
+              '${asDateTime(nearBy.startTime)} - ${asDateTime(nearBy.endTime!)}'),
         );
       },
     );
   }
+
+  String asDateTime(double millisSinceEpoch) => DateFormat.yMd()
+      .add_jms()
+      .format(DateTime.fromMillisecondsSinceEpoch(millisSinceEpoch.toInt()));
 }
