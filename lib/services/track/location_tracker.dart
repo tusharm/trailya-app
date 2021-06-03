@@ -9,10 +9,10 @@ import 'visit.dart';
 /// uses a cache to reduce n/w calls to Google Places API
 ///
 class LocationTracker {
-  static const int TRACKING_TIME_INTERVAL_MS = 10000;
   static const int TRACKING_RADIUS_MTS = 2;
-  static const int TRACKING_MIN_STAY_MS = TRACKING_TIME_INTERVAL_MS * 3;
-  static const double TRACKING_DISTANCE_INTERVAL_MTS = 10;
+  static const int TRACKING_TIME_INTERVAL_MS = 30000;
+  static const int TRACKING_MIN_STAY_MS = 60000;
+  static const double TRACKING_DISTANCE_INTERVAL_MTS = 5;
 
   static const String ALLOWED_PLACE_TYPES = 'establishment';
 
@@ -55,8 +55,7 @@ class LocationTracker {
           gp.NearBySearchResponse? resp =
               await googlePlace.search.getNearBySearch(
             gp.Location(lat: loc.latitude, lng: loc.longitude),
-            TRACKING_TIME_INTERVAL_MS,
-            rankby: gp.RankBy.Distance,
+            TRACKING_RADIUS_MTS,
           );
 
           // find the first match
