@@ -1,8 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="au.com.trailya">
-   <application
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <application
         android:label="trailya"
         android:icon="@mipmap/ic_launcher">
+        <meta-data android:name="com.google.android.geo.API_KEY"
+           android:value="APIKEY"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

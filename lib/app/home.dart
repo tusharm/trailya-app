@@ -21,14 +21,11 @@ class HomePage extends StatelessWidget {
           bottom: TabBar(
             tabs: [
               Tab(
-                text: 'Visits',
                 icon: Icon(Icons.place_outlined),
               ),
               Tab(
-                  text: 'Site alerts',
                   icon: Icon(Icons.notification_important_rounded)),
               Tab(
-                text: 'Profile',
                 icon: Icon(Icons.person),
               ),
             ],

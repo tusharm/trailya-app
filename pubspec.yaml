@@ -30,9 +30,8 @@ dependencies:
   sqflite: ^2.0.0+3
   path: ^1.8.0
 
+  google_maps_flutter: ^2.0.6
   location: ^4.1.1
-  google_place:
-    path: ./google_place
 
   intl: ^0.17.0
   flutter_dotenv: ^5.0.0

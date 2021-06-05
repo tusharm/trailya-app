@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 import 'package:trailya/services/track/location_tracker.dart';
 import 'package:trailya/services/track/visit.dart';
 
@@ -14,56 +15,77 @@ class VisitsPage extends StatefulWidget {
 
 class _VisitsPageState extends State<VisitsPage> {
   final LocationTracker tracker = LocationTracker();
-
-  late final List<Visit> locations = List.empty(growable: true);
+  late final List<Visit> visits = List.empty(growable: true);
+  GoogleMapController? _mapController;
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: tracker.initialize(),
-      builder: (context, AsyncSnapshot<bool> snapshot) {
-        if (!snapshot.hasData || !snapshot.data!) {
+      future: _initTracker(),
+      builder: (context, AsyncSnapshot<LocationData?> snapshot) {
+        if (!snapshot.hasData || snapshot.data == null) {
           return EmptyContent(
             title: 'Location tracking disabled',
             message: 'Manually add visited places',
           );
         }
 
-        return StreamBuilder(
-          stream: tracker.visits(),
-          builder: (context, AsyncSnapshot<Visit?> snapshot) {
-            if (!snapshot.hasData) {
-              return EmptyContent(
-                title: 'Waiting for locations..',
-                message: '',
-              );
-            }
+        final currentLocation = _toLatLng(snapshot.data!);
 
-            locations.add(snapshot.data!);
-            return _buildContent();
+        return StreamBuilder<Visit>(
+          stream: tracker.visits(),
+          builder: (context, AsyncSnapshot<Visit> snapshot) {
+            final latLng = snapshot.hasData
+                ? _toLatLng(snapshot.data!.loc)
+                : currentLocation;
+
+            return FutureBuilder<GoogleMap>(
+              future: _buildMap(latLng),
+              builder: (context, AsyncSnapshot<GoogleMap> snapshot) {
+                if (snapshot.hasData) {
+                  return snapshot.data!;
+                }
+
+                return Scaffold(
+                  body: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              },
+            );
           },
         );
       },
     );
   }
 
-  ListView _buildContent() {
-    return ListView.builder(
-      itemCount: locations.length,
-      itemBuilder: (context, index) {
-        Visit nearBy = locations.elementAt(index);
-
-        return ListTile(
-          isThreeLine: true,
-          title: Text(nearBy.nearby.name ?? 'Unknown'),
-          subtitle: Text('${nearBy.nearby.vicinity ?? 'Unknown'}\n'
-              '${asDateTime(nearBy.startTime)} - ${asDateTime(nearBy.endTime!)}'),
-        );
-      },
-    );
+  LatLng _toLatLng(LocationData locationData) {
+    return LatLng(locationData.latitude!, locationData.longitude!);
   }
 
-  String asDateTime(double millisSinceEpoch) => DateFormat.yMd()
-      .add_jms()
-      .format(DateTime.fromMillisecondsSinceEpoch(millisSinceEpoch.toInt()));
+  Future<GoogleMap> _buildMap(LatLng location) async {
+    final map = GoogleMap(
+      onMapCreated: _onMapCreated,
+      initialCameraPosition: CameraPosition(
+        target: location,
+        zoom: 17.0,
+      ),
+      myLocationEnabled: true,
+    );
+
+    if (_mapController != null) {
+      await _mapController!.animateCamera(CameraUpdate.newLatLng(location));
+    }
+
+    return map;
+  }
+
+  Future<LocationData?> _initTracker() async {
+    final success = await tracker.initialize();
+    return success ? await tracker.currentLocation() : null;
+  }
+
+  void _onMapCreated(GoogleMapController controller) {
+    this._mapController = controller;
+  }
 }

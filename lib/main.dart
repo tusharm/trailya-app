@@ -10,7 +10,7 @@ import 'app/home.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await dotenv.load(fileName: '.env');
+  // await dotenv.load(fileName: '.env');
   await Firebase.initializeApp();
 
   // Set the background messaging handler early on, as a named top-level function
