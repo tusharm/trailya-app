@@ -1,13 +1,13 @@
 import 'package:location/location.dart';
 
 class Visit {
-  static const int TRACKING_MIN_STAY_SEC = 15;
+  Visit(this.loc) : startTime = loc.time!;
+
+  static const int trackingMinStaySec = 60;
 
   final LocationData loc;
   final double startTime;
   double? endTime;
-
-  Visit(this.loc) : this.startTime = loc.time!;
 
   void end() {
     endTime = DateTime.now().millisecondsSinceEpoch.toDouble();
@@ -17,9 +17,8 @@ class Visit {
     DateTime asDateTime(double millisSinceEpoch) =>
         DateTime.fromMillisecondsSinceEpoch(millisSinceEpoch.toInt());
 
-    final delta =
-        asDateTime(this.startTime).difference(asDateTime(other.startTime));
-    return delta.inSeconds > TRACKING_MIN_STAY_SEC;
+    final delta = asDateTime(startTime).difference(asDateTime(other.startTime));
+    return delta.inSeconds > trackingMinStaySec;
   }
 
   Duration duration() {

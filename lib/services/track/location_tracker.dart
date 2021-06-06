@@ -31,6 +31,8 @@ class LocationTracker {
         interval: trackingTimeIntervalMs,
         distanceFilter: trackingDistanceIntervalMs,
       );
+
+      await location.enableBackgroundMode(enable: true);
     }
 
     return userPermitted;
