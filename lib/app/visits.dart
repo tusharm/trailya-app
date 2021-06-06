@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'package:trailya/services/track/location_tracker.dart';
 import 'package:trailya/services/track/visit.dart';
 
 import 'widgets/empty.dart';
+import 'widgets/waiting.dart';
 
 class VisitsPage extends StatefulWidget {
   const VisitsPage({Key? key}) : super(key: key);
@@ -15,77 +17,95 @@ class VisitsPage extends StatefulWidget {
 
 class _VisitsPageState extends State<VisitsPage> {
   final LocationTracker tracker = LocationTracker();
-  late final List<Visit> visits = List.empty(growable: true);
   GoogleMapController? _mapController;
+  final BitmapDescriptor _markerIcon = BitmapDescriptor.defaultMarker;
+
+  final markers = List.empty(growable: true);
+  bool trackingPermitted = false;
+
+  @override
+  void initState() {
+    tracker.initialize().then((permitted) {
+      setState(() {
+        trackingPermitted = permitted;
+        if (trackingPermitted) {
+          tracker.visits().listen(_onVisit);
+        }
+      });
+    });
+
+    super.initState();
+  }
+
+  void _onVisit(Visit visit) {
+    final latLng = _toLatLng(visit.loc);
+
+    setState(() {
+      markers.add(Marker(
+        markerId: MarkerId('marker-${markers.length}'),
+        icon: _markerIcon,
+        position: latLng,
+        infoWindow: InfoWindow(
+          title: _humanisedDuration(visit),
+          snippet: '${_format(visit.startTime)} - ${_format(visit.endTime!)}',
+        ),
+      ));
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _initTracker(),
-      builder: (context, AsyncSnapshot<LocationData?> snapshot) {
-        if (!snapshot.hasData || snapshot.data == null) {
-          return EmptyContent(
-            title: 'Location tracking disabled',
-            message: 'Manually add visited places',
-          );
+    if (!trackingPermitted) {
+      return EmptyContent(
+        title: 'Location tracking disabled',
+        message: 'Enable it in Settings',
+      );
+    }
+
+    return StreamBuilder<LocationData>(
+      stream: tracker.locations(),
+      builder: (ctxt, snapshot) {
+        if (!snapshot.hasData) return Waiting();
+
+        var latLng = _toLatLng(snapshot.data!);
+
+        if (_mapController != null) {
+          _mapController!.animateCamera(CameraUpdate.newLatLng(latLng));
         }
 
-        final currentLocation = _toLatLng(snapshot.data!);
-
-        return StreamBuilder<Visit>(
-          stream: tracker.visits(),
-          builder: (context, AsyncSnapshot<Visit> snapshot) {
-            final latLng = snapshot.hasData
-                ? _toLatLng(snapshot.data!.loc)
-                : currentLocation;
-
-            return FutureBuilder<GoogleMap>(
-              future: _buildMap(latLng),
-              builder: (context, AsyncSnapshot<GoogleMap> snapshot) {
-                if (snapshot.hasData) {
-                  return snapshot.data!;
-                }
-
-                return Scaffold(
-                  body: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                );
-              },
-            );
-          },
+        return GoogleMap(
+          onMapCreated: _onMapCreated,
+          initialCameraPosition: CameraPosition(
+            target: latLng,
+            zoom: 17.0,
+          ),
+          myLocationEnabled: true,
+          markers: markers.toSet().cast(),
         );
       },
     );
   }
 
+  String _humanisedDuration(Visit visit) {
+    final duration = visit.duration();
+    if (duration.inSeconds < 60) {
+      return '${visit.duration().inSeconds} secs';
+    } else if (duration.inMinutes < 60) {
+      return '${visit.duration().inMinutes} mins';
+    } else {
+      return '${visit.duration().inHours} hrs';
+    }
+  }
+
+  String _format(double msSinceEpoch) => DateFormat()
+      .add_jms()
+      .format(DateTime.fromMillisecondsSinceEpoch(msSinceEpoch.toInt()));
+
   LatLng _toLatLng(LocationData locationData) {
     return LatLng(locationData.latitude!, locationData.longitude!);
   }
 
-  Future<GoogleMap> _buildMap(LatLng location) async {
-    final map = GoogleMap(
-      onMapCreated: _onMapCreated,
-      initialCameraPosition: CameraPosition(
-        target: location,
-        zoom: 17.0,
-      ),
-      myLocationEnabled: true,
-    );
-
-    if (_mapController != null) {
-      await _mapController!.animateCamera(CameraUpdate.newLatLng(location));
-    }
-
-    return map;
-  }
-
-  Future<LocationData?> _initTracker() async {
-    final success = await tracker.initialize();
-    return success ? await tracker.currentLocation() : null;
-  }
-
   void _onMapCreated(GoogleMapController controller) {
-    this._mapController = controller;
+    _mapController = controller;
   }
 }

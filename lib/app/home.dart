@@ -23,8 +23,7 @@ class HomePage extends StatelessWidget {
               Tab(
                 icon: Icon(Icons.place_outlined),
               ),
-              Tab(
-                  icon: Icon(Icons.notification_important_rounded)),
+              Tab(icon: Icon(Icons.notification_important_rounded)),
               Tab(
                 icon: Icon(Icons.person),
               ),

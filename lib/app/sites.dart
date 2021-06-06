@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:trailya/services/store/db_helper.dart';
 import 'package:trailya/services/store/site.dart';
 
-
 class ExposedSitesPage extends StatelessWidget {
   const ExposedSitesPage({Key? key}) : super(key: key);
 
@@ -28,15 +27,14 @@ class ExposedSitesPage extends StatelessWidget {
                 return ListTile(
                   leading: Icon(Icons.place),
                   title: Text(site!.name),
-                  subtitle: Text('${site.address}, ${site.state}, ${site.postcode}'),
+                  subtitle:
+                      Text('${site.address}, ${site.state}, ${site.postcode}'),
                 );
               },
             );
           }
 
           return CircularProgressIndicator();
-        }
-    );
+        });
   }
-
 }

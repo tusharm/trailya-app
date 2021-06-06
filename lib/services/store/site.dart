@@ -1,4 +1,3 @@
-
 class Site {
   final String id;
   final String suburb;
