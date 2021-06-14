@@ -22,7 +22,7 @@ class ExposedSitesPage extends StatelessWidget {
             return ListView.builder(
               itemCount: items?.length,
               itemBuilder: (context, index) {
-                Site? site = items?.elementAt(index);
+                final site = items?.elementAt(index);
 
                 return ListTile(
                   leading: Icon(Icons.place),

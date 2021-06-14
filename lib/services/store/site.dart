@@ -23,15 +23,15 @@ class Site {
 
   Map<String, dynamic> toMap() {
     return {
-      "id": this.id,
-      "suburb": this.suburb,
-      "name": this.name,
-      "address": this.address,
-      "state": this.state,
-      "postcode": this.postcode,
-      "exposure_date": this.exposureDate,
-      "exposure_time_start": this.exposureStartTime,
-      "exposure_time_end": this.exposureEndTime
+      'id': id,
+      'suburb': suburb,
+      'name': name,
+      'address': address,
+      'state': state,
+      'postcode': postcode,
+      'exposure_date': exposureDate,
+      'exposure_time_start': exposureStartTime,
+      'exposure_time_end': exposureEndTime
     };
   }
 

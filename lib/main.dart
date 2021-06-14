@@ -30,7 +30,7 @@ Future<void> setupMessaging() async {
       print('Message also contained a notification: ${message.notification}');
     }
 
-    await handleSitesUpdateMessage(message);
+    await _handleSitesUpdateMessage(message);
   });
 
   await FirebaseMessaging.instance.subscribeToTopic('test');
@@ -41,13 +41,13 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print('Message data: ${message.data}');
 
   if (message.notification != null) {
-    print('Message also contained a notification: ${message.notification}');
+    print('Message also contained a notification: ${message.notification!.title}');
   }
 
-  await handleSitesUpdateMessage(message);
+  await _handleSitesUpdateMessage(message);
 }
 
-Future<void> handleSitesUpdateMessage(RemoteMessage message) async {
+Future<void> _handleSitesUpdateMessage(RemoteMessage message) async {
   await DataBaseHelper().persist(Site(
     id: message.data['id'],
     suburb: message.data['Suburb'],
@@ -68,7 +68,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         title: 'trailya',
-        theme: new ThemeData(primarySwatch: Colors.indigo),
+        theme: ThemeData(primarySwatch: Colors.indigo),
         home: HomePage());
   }
 }

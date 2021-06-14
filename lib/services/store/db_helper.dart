@@ -18,12 +18,12 @@ class DataBaseHelper {
   }
 
   Future<Database> _initDB() async {
-    String path = join(await getDatabasesPath(), dbName);
+    final path = join(await getDatabasesPath(), dbName);
     return await openDatabase(path, version: 1, onCreate: _onCreate);
   }
 
   void _onCreate(Database db, int newVersion) async {
-    await db.execute("""
+    await db.execute('''
         CREATE TABLE sites (
           id TEXT PRIMARY KEY,
           suburb TEXT,
@@ -35,18 +35,17 @@ class DataBaseHelper {
           exposure_time_start TEXT,
           exposure_time_end TEXT
         )
-        """);
+        ''');
   }
 
   Future<int> persist(Site site) async {
     var client = await db;
 
-    int result = await client.insert(
+    return await client.insert(
       sitesTable,
       site.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-    return result;
   }
 
   Future<List<Site>> sites() async {
