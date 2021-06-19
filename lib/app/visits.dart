@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
+import 'package:trailya/app/widgets/center.dart';
 import 'package:trailya/services/track/location_tracker.dart';
 import 'package:trailya/services/track/visit.dart';
 
-import 'widgets/empty.dart';
 import 'widgets/waiting.dart';
 
 class VisitsPage extends StatefulWidget {
@@ -56,7 +56,7 @@ class _VisitsPageState extends State<VisitsPage> {
   @override
   Widget build(BuildContext context) {
     if (!trackingPermitted) {
-      return EmptyContent(
+      return CenteredContent(
         title: 'Location tracking disabled',
         message: 'Enable it in Settings',
       );

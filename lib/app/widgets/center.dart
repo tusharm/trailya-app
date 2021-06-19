@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class EmptyContent extends StatelessWidget {
-  const EmptyContent({
+class CenteredContent extends StatelessWidget {
+  const CenteredContent({
     Key? key,
     required this.title,
     required this.message,

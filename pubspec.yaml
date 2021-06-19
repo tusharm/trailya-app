@@ -24,8 +24,11 @@ dependencies:
   flutter:
     sdk: flutter
 
+  provider: ^5.0.0
+
   firebase_core: ^1.2.0
   firebase_messaging: ^10.0.0
+  cloud_firestore: ^2.2.2
 
   sqflite: ^2.0.0+3
   path: ^1.8.0

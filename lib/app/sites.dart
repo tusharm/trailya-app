@@ -1,40 +1,67 @@
 import 'package:flutter/material.dart';
-import 'package:trailya/services/store/db_helper.dart';
+import 'package:trailya/app/widgets/center.dart';
 import 'package:trailya/services/store/site.dart';
+import 'package:trailya/services/store/sites_store.dart';
 
 class ExposedSitesPage extends StatelessWidget {
-  const ExposedSitesPage({Key? key}) : super(key: key);
+  ExposedSitesPage({Key? key}) : super(key: key);
+  final sitesStore = SitesStore();
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: DataBaseHelper().sites(),
-        builder: (BuildContext context, AsyncSnapshot<List<Site>> snapshot) {
-          if (snapshot.hasError) {
-            return Center(
-              child: Text('Got error getting sites: ${snapshot.error}'),
+    return StreamBuilder<List<Site>>(
+      stream: sitesStore.getSites(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return CenteredContent(
+            title: 'Internal error',
+            message: 'Got error getting sites: ${snapshot.error}',
+          );
+        }
+
+        if (snapshot.hasData) {
+          final sites = snapshot.data!;
+
+          if (sites.isEmpty) {
+            return CenteredContent(
+              title: 'Nothing here',
+              message: 'No sites found',
             );
           }
 
-          if (snapshot.hasData) {
-            final items = snapshot.data;
+          return _buildListView(sites);
+        }
 
-            return ListView.builder(
-              itemCount: items?.length,
-              itemBuilder: (context, index) {
-                final site = items?.elementAt(index);
+        return CircularProgressIndicator();
+      },
+    );
+  }
 
-                return ListTile(
-                  leading: Icon(Icons.place),
-                  title: Text(site!.name),
-                  subtitle:
-                      Text('${site.address}, ${site.state}, ${site.postcode}'),
-                );
-              },
-            );
-          }
+  ListView _buildListView(List<Site> sites) {
+    return ListView.separated(
+      itemCount: sites.length + 2,
+      separatorBuilder: (context, index) => Divider(
+        height: 5.0,
+        thickness: 0.5,
+      ),
+      itemBuilder: (context, index) {
+        // two show dividers before the first and after the last item in the list
+        if (index == 0 || index == sites.length + 1) {
+          return Container();
+        }
 
-          return CircularProgressIndicator();
-        });
+        final site = sites[index - 1];
+        return ListTile(
+          isThreeLine: true,
+          dense: false,
+          title: Text(site.name),
+          subtitle: Text(
+            '${site.address}, ${site.state}, ${site.postcode}\n'
+            '${site.exposureDate}, ${site.exposureStartTime} - ${site.exposureEndTime}',
+          ),
+          onTap: () {},
+        );
+      },
+    );
   }
 }
