@@ -29,8 +29,6 @@ Future<void> setupMessaging() async {
     if (message.notification != null) {
       print('Message also contained a notification: ${message.notification}');
     }
-
-    await _handleSitesUpdateMessage(message);
   });
 
   await FirebaseMessaging.instance.subscribeToTopic('test');
@@ -43,22 +41,6 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   if (message.notification != null) {
     print('Message also contained a notification: ${message.notification!.title}');
   }
-
-  await _handleSitesUpdateMessage(message);
-}
-
-Future<void> _handleSitesUpdateMessage(RemoteMessage message) async {
-  await DataBaseHelper().persist(Site(
-    id: message.data['id'],
-    suburb: message.data['Suburb'],
-    name: message.data['Site_title'],
-    address: message.data['Site_streetaddress'],
-    state: message.data['Site_state'],
-    postcode: message.data['Site_postcode'],
-    exposureDate: message.data['Exposure_date_dtm'],
-    exposureStartTime: message.data['Exposure_time_start_24'],
-    exposureEndTime: message.data['Exposure_time_end_24'],
-  ));
 }
 
 class App extends StatelessWidget {

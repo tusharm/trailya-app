@@ -1,42 +1,36 @@
-class Site {
-  final String id;
-  final String suburb;
-  final String name;
-  final String address;
-  final String state;
-  final String postcode;
-  final String exposureDate;
-  final String exposureStartTime;
-  final String exposureEndTime;
 
+
+class Site {
   Site({
-    required this.id,
+    required this.title,
     required this.suburb,
-    required this.name,
     required this.address,
     required this.state,
-    required this.postcode,
-    required this.exposureDate,
+    this.postcode,
+    required this.addedTime,
     required this.exposureStartTime,
     required this.exposureEndTime,
   });
 
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'suburb': suburb,
-      'name': name,
-      'address': address,
-      'state': state,
-      'postcode': postcode,
-      'exposure_date': exposureDate,
-      'exposure_time_start': exposureStartTime,
-      'exposure_time_end': exposureEndTime
-    };
+  factory Site.fromMap(Map<String, dynamic> data) {
+    return Site(
+      title: data['title'],
+      suburb: data['suburb'],
+      address: data['street_address'],
+      state: data['state'],
+      postcode: data['postcode'],
+      addedTime: data['added_time'].toDate(),
+      exposureStartTime: data['exposure_start_time'].toDate(),
+      exposureEndTime: data['exposure_end_time'].toDate(),
+    );
   }
 
-  @override
-  String toString() {
-    return 'Site{id: $id, name: $name, suburb: $suburb, address: $address, state: $state, postcode: $postcode, date: $exposureDate}';
-  }
+  final String title;
+  final String suburb;
+  final String address;
+  final String state;
+  final int? postcode;
+  final DateTime addedTime;
+  final DateTime exposureStartTime;
+  final DateTime exposureEndTime;
 }

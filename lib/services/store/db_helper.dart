@@ -38,36 +38,36 @@ class DataBaseHelper {
         ''');
   }
 
-  Future<int> persist(Site site) async {
-    var client = await db;
+  // Future<int> persist(Site site) async {
+  //   var client = await db;
+  //
+  //   return await client.insert(
+  //     sitesTable,
+  //     site.toMap(),
+  //     conflictAlgorithm: ConflictAlgorithm.replace,
+  //   );
+  // }
 
-    return await client.insert(
-      sitesTable,
-      site.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-  }
-
-  Future<List<Site>> sites() async {
-    final client = await db;
-
-    final List<Map<String, dynamic>> maps = await client.query(sitesTable);
-
-    return List.generate(
-      maps.length,
-      (i) {
-        return Site(
-          id: maps[i]['id'],
-          suburb: maps[i]['suburb'],
-          name: maps[i]['name'],
-          address: maps[i]['address'],
-          state: maps[i]['state'],
-          postcode: maps[i]['postcode'],
-          exposureDate: maps[i]['exposure_date'],
-          exposureStartTime: maps[i]['exposure_time_start'],
-          exposureEndTime: maps[i]['exposure_time_end'],
-        );
-      },
-    );
-  }
+  // Future<List<Site>> sites() async {
+  //   final client = await db;
+  //
+  //   final List<Map<String, dynamic>> maps = await client.query(sitesTable);
+  //
+  //   return List.generate(
+  //     maps.length,
+  //     (i) {
+  //       return Site(
+  //         id: maps[i]['id'],
+  //         suburb: maps[i]['suburb'],
+  //         name: maps[i]['name'],
+  //         address: maps[i]['address'],
+  //         state: maps[i]['state'],
+  //         postcode: maps[i]['postcode'],
+  //         exposureDate: maps[i]['exposure_date'],
+  //         exposureStartTime: maps[i]['exposure_time_start'],
+  //         exposureEndTime: maps[i]['exposure_time_end'],
+  //       );
+  //     },
+  //   );
+  // }
 }

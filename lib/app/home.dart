@@ -33,7 +33,7 @@ class HomePage extends StatelessWidget {
         body: TabBarView(
           children: [
             VisitsPage(),
-            ExposedSitesPage(),
+            ExposedSitesPage.create(context),
             ProfilePage(),
           ],
         ),

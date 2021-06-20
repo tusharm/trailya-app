@@ -2,32 +2,23 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:trailya/services/store/site.dart';
 
 class SitesStore {
+  static const trackingPeriod = 15;
+
   final _firestore = FirebaseFirestore.instance;
 
   Stream<List<Site>> getSites() {
-    return Stream.value([
-      Site(
-        id: '1',
-        suburb: 'Melbourne',
-        name: 'KMart Melbourne CBD',
-        address: '236, Bourke Street',
-        state: 'Victoria',
-        postcode: '3000',
-        exposureDate: '2021-06-13',
-        exposureStartTime: '2:40pm',
-        exposureEndTime: '3:30pm'
-      ),
-      Site(
-          id: '2',
-          suburb: 'Southbank',
-          name: 'Chemist Warehouse Southbank',
-          address: 'Shops 2 and 3, 153 to 159 Sturt Street',
-          state: 'Victoria',
-          postcode: '3006',
-          exposureDate: '2021-06-06',
-          exposureStartTime: '10:00am',
-          exposureEndTime: '10:10am'
-      ),
-    ]);
+    var stream = _firestore
+        .collectionGroup('sites')
+        .where('exposure_start_time',
+            isGreaterThanOrEqualTo: Timestamp.fromDate(DateTime.now()
+                .subtract(Duration(days: trackingPeriod))
+                .toUtc()))
+        .snapshots()
+        .map((snapshot) {
+          final sites = snapshot.docs.map((e) => Site.fromMap(e.data())).toList();
+          sites.sort((a, b) => b.addedTime.compareTo(a.addedTime));
+          return sites;
+        });
+    return stream;
   }
 }
