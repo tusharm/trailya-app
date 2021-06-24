@@ -10,6 +10,8 @@ class Site {
     required this.addedTime,
     required this.exposureStartTime,
     required this.exposureEndTime,
+    this.latitude,
+    this.longitude,
   });
 
   factory Site.fromMap(Map<String, dynamic> data) {
@@ -22,6 +24,8 @@ class Site {
       addedTime: data['added_time'].toDate(),
       exposureStartTime: data['exposure_start_time'].toDate(),
       exposureEndTime: data['exposure_end_time'].toDate(),
+      latitude: data.containsKey('latitude') ? data['latitude'] : -37.8194,
+      longitude: data.containsKey('longitude') ? data['longitude'] : 144.9585,
     );
   }
 
@@ -33,4 +37,6 @@ class Site {
   final DateTime addedTime;
   final DateTime exposureStartTime;
   final DateTime exposureEndTime;
+  double? latitude;
+  double? longitude;
 }

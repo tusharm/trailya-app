@@ -3,25 +3,30 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'package:trailya/app/widgets/center.dart';
+import 'package:trailya/model/sites_notifier.dart';
 import 'package:trailya/services/track/location_tracker.dart';
 import 'package:trailya/services/track/visit.dart';
 
-import 'widgets/waiting.dart';
+class VisitsScreen extends StatefulWidget {
+  const VisitsScreen({
+    required this.sitesNotifier,
+  });
 
-class VisitsPage extends StatefulWidget {
-  const VisitsPage({Key? key}) : super(key: key);
+  final SitesNotifier sitesNotifier;
 
   @override
-  _VisitsPageState createState() => _VisitsPageState();
+  _VisitsScreenState createState() => _VisitsScreenState();
 }
 
-class _VisitsPageState extends State<VisitsPage> {
+class _VisitsScreenState extends State<VisitsScreen> {
   final LocationTracker tracker = LocationTracker();
   GoogleMapController? _mapController;
   final BitmapDescriptor _markerIcon = BitmapDescriptor.defaultMarker;
 
   final markers = List.empty(growable: true);
   bool trackingPermitted = false;
+  LocationData initialLocation = LocationData.fromMap(
+      {'latitude': -33.87241362319646, 'longitude': 151.20726191291067});
 
   @override
   void initState() {
@@ -64,13 +69,14 @@ class _VisitsPageState extends State<VisitsPage> {
 
     return StreamBuilder<LocationData>(
       stream: tracker.locations(),
+      initialData: initialLocation,
       builder: (ctxt, snapshot) {
-        if (!snapshot.hasData) return Waiting();
-
-        var latLng = _toLatLng(snapshot.data!);
+        initialLocation = snapshot.data!;
+        var latLng = _toLatLng(initialLocation);
 
         if (_mapController != null) {
-          _mapController!.animateCamera(CameraUpdate.newLatLng(latLng));
+          _mapController!.animateCamera(CameraUpdate.newLatLng(
+              widget.sitesNotifier.currentSite ?? latLng));
         }
 
         return GoogleMap(

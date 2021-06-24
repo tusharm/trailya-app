@@ -1,11 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:trailya/services/store/db_helper.dart';
-import 'package:trailya/services/store/site.dart';
+import 'package:provider/provider.dart';
+import 'package:trailya/app/home_screen.dart';
+import 'package:trailya/services/sites_service.dart';
+import 'package:trailya/services/track/location_tracker.dart';
 
-import 'app/home.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,7 +39,8 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print('Message data: ${message.data}');
 
   if (message.notification != null) {
-    print('Message also contained a notification: ${message.notification!.title}');
+    print(
+        'Message also contained a notification: ${message.notification!.title}');
   }
 }
 
@@ -49,8 +50,15 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'trailya',
-        theme: ThemeData(primarySwatch: Colors.indigo),
-        home: HomePage());
+      title: 'trailya',
+      theme: ThemeData(primarySwatch: Colors.indigo),
+      home: MultiProvider(
+        providers: [
+          Provider<SitesService>(create: (_) => SitesService()),
+          Provider<LocationTracker>(create: (_) => LocationTracker()),
+        ],
+        child: HomeScreen(),
+      ),
+    );
   }
 }

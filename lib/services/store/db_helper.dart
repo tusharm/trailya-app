@@ -1,7 +1,7 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-import 'site.dart';
+import '../../model/site.dart';
 
 class DataBaseHelper {
   static Database? _db;
