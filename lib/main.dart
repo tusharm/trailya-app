@@ -3,9 +3,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:trailya/app/home_screen.dart';
+import 'package:trailya/services/location_service.dart';
 import 'package:trailya/services/sites_service.dart';
-import 'package:trailya/services/track/location_tracker.dart';
-
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,7 +15,8 @@ Future<void> main() async {
   // Set the background messaging handler early on, as a named top-level function
   await setupMessaging();
 
-  runApp(App());
+  final service = await LocationService.create();
+  runApp(App(locationService: service,));
 }
 
 Future<void> setupMessaging() async {
@@ -45,7 +45,9 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 class App extends StatelessWidget {
-  const App({Key? key}) : super(key: key);
+  const App({Key? key, required this.locationService}) : super(key: key);
+
+  final LocationService locationService;
 
   @override
   Widget build(BuildContext context) {
@@ -54,8 +56,8 @@ class App extends StatelessWidget {
       theme: ThemeData(primarySwatch: Colors.indigo),
       home: MultiProvider(
         providers: [
-          Provider<SitesService>(create: (_) => SitesService()),
-          Provider<LocationTracker>(create: (_) => LocationTracker()),
+          Provider(create: (_) => SitesService()),
+          Provider(create: (_) => locationService)
         ],
         child: HomeScreen(),
       ),

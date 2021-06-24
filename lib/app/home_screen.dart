@@ -9,6 +9,21 @@ import 'package:trailya/services/sites_service.dart';
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (context) {
+        final notifier = SitesNotifier();
+        Provider.of<SitesService>(context, listen: false)
+            .getSites()
+            .listen((sites) {
+          notifier.refreshSites(sites);
+        });
+        return notifier;
+      },
+      child: _buildContent(),
+    );
+  }
+
+  DefaultTabController _buildContent() {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -24,28 +39,18 @@ class HomeScreen extends StatelessWidget {
             ],
           ),
         ),
-        body: ChangeNotifierProvider(
-          create: (_) => SitesNotifier(),
-          child: Consumer<SitesNotifier>(
-            builder: _tabViewBuilder,
-          ),
+        body: TabBarView(
+          physics: NeverScrollableScrollPhysics(),
+          children: [
+            VisitsScreen(),
+            Consumer<SitesNotifier>(
+              builder: (c, notifier, _) =>
+                  SitesScreen(sitesNotifier: notifier),
+            ),
+            ProfileScreen(),
+          ],
         ),
       ),
-    );
-  }
-
-  Widget _tabViewBuilder(BuildContext context, SitesNotifier sitesNotifier, Widget? child) {
-    final sitesService = Provider.of<SitesService>(context, listen: false);
-    sitesService.getSites().listen((sites) {
-      sitesNotifier.refreshSites(sites);
-    });
-
-    return TabBarView(
-      children: [
-        VisitsScreen(sitesNotifier: sitesNotifier),
-        SitesScreen(sitesNotifier: sitesNotifier),
-        ProfileScreen(),
-      ],
     );
   }
 }
