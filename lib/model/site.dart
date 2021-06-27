@@ -1,5 +1,3 @@
-
-
 class Site {
   Site({
     required this.title,
@@ -24,8 +22,12 @@ class Site {
       addedTime: data['added_time'].toDate(),
       exposureStartTime: data['exposure_start_time'].toDate(),
       exposureEndTime: data['exposure_end_time'].toDate(),
-      latitude: data.containsKey('latitude') ? data['latitude'] : -37.8194,
-      longitude: data.containsKey('longitude') ? data['longitude'] : 144.9585,
+      latitude: data.containsKey('geocode')
+          ? data['geocode']['geometry']['location']['lat']
+          : -37.8194,
+      longitude: data.containsKey('geocode')
+          ? data['geocode']['geometry']['location']['lng']
+          : 144.9585,
     );
   }
 
@@ -39,4 +41,10 @@ class Site {
   final DateTime exposureEndTime;
   double? latitude;
   double? longitude;
+
+  String get uniqueId {
+    final replaced = address.replaceAll(RegExp(r'[\s,()]'), '_');
+    return '${replaced}_${addedTime.millisecondsSinceEpoch}_${exposureStartTime
+        .millisecondsSinceEpoch}_${exposureEndTime.millisecondsSinceEpoch}';
+  }
 }

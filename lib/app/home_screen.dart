@@ -39,17 +39,15 @@ class HomeScreen extends StatelessWidget {
             ],
           ),
         ),
-        body: TabBarView(
-          physics: NeverScrollableScrollPhysics(),
-          children: [
-            VisitsScreen(),
-            Consumer<SitesNotifier>(
-              builder: (c, notifier, _) =>
-                  SitesScreen(sitesNotifier: notifier),
-            ),
-            ProfileScreen(),
-          ],
-        ),
+        body: Consumer<SitesNotifier>(
+            builder: (c, notifier, _) => TabBarView(
+                  physics: NeverScrollableScrollPhysics(),
+                  children: [
+                    VisitsScreen(sitesNotifier: notifier),
+                    SitesScreen(sitesNotifier: notifier),
+                    ProfileScreen(),
+                  ],
+                )),
       ),
     );
   }

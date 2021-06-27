@@ -1,30 +1,32 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 import 'package:trailya/app/widgets/center.dart';
+import 'package:trailya/model/sites_notifier.dart';
 import 'package:trailya/model/visit.dart';
 import 'package:trailya/services/location_service.dart';
 
 class VisitsScreen extends StatefulWidget {
-  final BitmapDescriptor _markerIcon = BitmapDescriptor.defaultMarker;
+  VisitsScreen({required this.sitesNotifier});
 
   final DateFormat format = DateFormat().add_jms();
+  final BitmapDescriptor markerIcon = BitmapDescriptor.defaultMarker;
+  final SitesNotifier sitesNotifier;
 
-  Marker toMarker(String id, Visit visit) {
-    final latLng = asLatLng(visit.loc);
-
-    return Marker(
-      markerId: MarkerId(id),
-      icon: _markerIcon,
-      position: latLng,
-      infoWindow: InfoWindow(
-        title: readableDurationFor(visit),
-        snippet:
-            '${formatDate(visit.startTime)} - ${formatDate(visit.endTime!)}',
-      ),
-    );
+  Circle toCircle(String id, Visit visit) {
+    return Circle(
+        circleId: CircleId(id),
+        fillColor: Colors.redAccent.withOpacity(0.2),
+        strokeWidth: 2,
+        strokeColor: Colors.redAccent,
+        center: asLatLng(visit.loc),
+        radius: LocationService.trackingDistanceIntervalMtr,
+        consumeTapEvents: true,
+        onTap: () {});
   }
 
   String formatDate(double msSinceEpoch) {
@@ -52,13 +54,13 @@ class VisitsScreen extends StatefulWidget {
 }
 
 class _VisitsScreenState extends State<VisitsScreen> {
-  final markers = List.empty(growable: true);
+  final visits = List.empty(growable: true);
   final LocationData initialLocation = LocationData.fromMap({
     'latitude': -33.87241362319646,
     'longitude': 151.20726191291067,
   });
 
-  GoogleMapController? _mapController;
+  final Completer<GoogleMapController> _mapController = Completer();
 
   @override
   void initState() {
@@ -73,6 +75,10 @@ class _VisitsScreenState extends State<VisitsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final currentSite = widget.sitesNotifier.currentSite;
+    print(
+        'Visits Screen state rebuild called with current site set to $currentSite');
+
     if (!Provider.of<LocationService>(context, listen: false).enabled) {
       return CenteredContent(
         title: 'Location tracking disabled',
@@ -81,37 +87,42 @@ class _VisitsScreenState extends State<VisitsScreen> {
     }
 
     return GoogleMap(
-      onMapCreated: (controller) => _mapController = controller,
+      onMapCreated: (controller) => _mapController.complete(controller),
       initialCameraPosition: CameraPosition(
-        target: widget.asLatLng(initialLocation),
+        target: currentSite == null
+            ? widget.asLatLng(initialLocation)
+            : LatLng(currentSite.latitude!, currentSite.longitude!),
         zoom: 17.0,
       ),
       myLocationEnabled: true,
       myLocationButtonEnabled: true,
-      markers: markers.toSet().cast(),
+      circles: visits.toSet().cast(),
+      markers: currentSite == null
+          ? {}
+          : {
+              Marker(
+                markerId: MarkerId(currentSite.uniqueId),
+                icon: widget.markerIcon,
+                position: LatLng(currentSite.latitude!, currentSite.longitude!),
+                infoWindow: InfoWindow(
+                  title: currentSite.title,
+                  snippet: "${widget.formatDate(currentSite.exposureStartTime.millisecondsSinceEpoch.toDouble())} - ${widget.formatDate(currentSite.exposureEndTime.millisecondsSinceEpoch.toDouble())}\nDate added: ${widget.formatDate(currentSite.addedTime.millisecondsSinceEpoch.toDouble())}",
+                ),
+              ),
+            },
     );
   }
 
   void _recordVisit(visit) {
     setState(() {
-      markers.add(widget.toMarker('marker-${markers.length}', visit));
+      visits.add(widget.toCircle('visit-${visits.length}', visit));
     });
   }
 
-  void _recenterMap(LocationData locationData) {
+  Future<void> _recenterMap(LocationData locationData) async {
     final latLng = widget.asLatLng(locationData);
 
-    if (_mapController != null) {
-      _mapController!.animateCamera(CameraUpdate.newLatLng(latLng));
-    }
-  }
-
-  @override
-  void dispose() {
-    if (_mapController != null) {
-      _mapController!.dispose();
-    }
-
-    super.dispose();
+    final controller = await _mapController.future;
+    await controller.animateCamera(CameraUpdate.newLatLng(latLng));
   }
 }

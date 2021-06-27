@@ -12,13 +12,12 @@ class SitesNotifier extends ChangeNotifier {
   String get location => _location;
   List<Site> get sites => UnmodifiableListView(_sites);
 
-  LatLng? get currentSite {
+  Site? get currentSite {
     if (_currentIndex == null) {
       return null;
     }
 
-    final site = _sites[_currentIndex!];
-    return LatLng(site.latitude!, site.longitude!);
+    return _sites[_currentIndex!];
   }
 
   void refreshSites(List<Site> sites) {
