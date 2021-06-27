@@ -16,32 +16,27 @@ Future<void> main() async {
   await setupMessaging();
 
   final service = await LocationService.create();
-  runApp(App(locationService: service,));
+  runApp(App(
+    locationService: service,
+  ));
 }
 
 Future<void> setupMessaging() async {
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
-  FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-    print('Got a message whilst in the foreground!');
-    print('Message data: ${message.data}');
-
+  FirebaseMessaging.onBackgroundMessage((RemoteMessage message) async {
     if (message.notification != null) {
-      print('Message also contained a notification: ${message.notification}');
+      print('Message contains a notification: ${message.notification}');
+    }
+
+    await Future.delayed(Duration(milliseconds: 1));
+  });
+
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    if (message.notification != null) {
+      print('Message contains a notification: ${message.notification}');
     }
   });
 
   await FirebaseMessaging.instance.subscribeToTopic('test');
-}
-
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print('Got a message whilst in the background!');
-  print('Message data: ${message.data}');
-
-  if (message.notification != null) {
-    print(
-        'Message also contained a notification: ${message.notification!.title}');
-  }
 }
 
 class App extends StatelessWidget {

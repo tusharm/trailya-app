@@ -29,6 +29,8 @@ class SitesScreen extends StatelessWidget {
         }
 
         final site = sites[index - 1];
+        final postcodeText = site.postcode != null ? ', ${site.postcode}' : '';
+
         return ListTile(
           leading: Text('$index'),
           minLeadingWidth: 10,
@@ -36,7 +38,7 @@ class SitesScreen extends StatelessWidget {
           dense: false,
           title: Text(site.title),
           subtitle: Text(
-            '${site.address}, ${site.state}, ${site.postcode}\n'
+            '${site.address}, ${site.state}$postcodeText\n'
             '${dateFormat.format(site.exposureStartTime)} - ${dateFormat.format(site.exposureEndTime)}',
           ),
           onTap: () {

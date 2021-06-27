@@ -6,9 +6,9 @@ class SitesService {
 
   final _firestore = FirebaseFirestore.instance;
 
-  Stream<List<Site>> getSites() {
+  Stream<List<Site>> getSites(String location) {
     return _firestore
-        .collectionGroup('sites')
+        .collectionGroup('${location}_sites')
         .where('exposure_start_time',
             isGreaterThanOrEqualTo: Timestamp.fromDate(DateTime.now()
                 .subtract(Duration(days: trackingPeriod))

@@ -7,7 +7,9 @@ import 'package:trailya/model/site.dart';
 class SitesNotifier extends ChangeNotifier {
   List<Site> _sites = [];
   int? _currentIndex;
+  final _location = 'NSW';
 
+  String get location => _location;
   List<Site> get sites => UnmodifiableListView(_sites);
 
   LatLng? get currentSite {

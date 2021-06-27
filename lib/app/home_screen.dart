@@ -13,7 +13,7 @@ class HomeScreen extends StatelessWidget {
       create: (context) {
         final notifier = SitesNotifier();
         Provider.of<SitesService>(context, listen: false)
-            .getSites()
+            .getSites(notifier.location)
             .listen((sites) {
           notifier.refreshSites(sites);
         });
