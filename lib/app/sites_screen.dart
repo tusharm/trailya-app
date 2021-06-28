@@ -32,23 +32,26 @@ class SitesScreen extends StatelessWidget {
         final postcodeText = site.postcode != null ? ', ${site.postcode}' : '';
 
         return ListTile(
+          tileColor: index % 2 == 0 ? Colors.grey.shade100 : Colors.white,
           leading: Text('$index'),
           minLeadingWidth: 10,
           isThreeLine: true,
           dense: false,
           title: Text(site.title),
           subtitle: Text(
-            '${site.address}, ${site.state}$postcodeText\n'
+            '${site.address}, ${site.suburb}, ${site.state}$postcodeText\n'
             '${dateFormat.format(site.exposureStartTime)} - ${dateFormat.format(site.exposureEndTime)}',
           ),
-          onTap: () {
-            final tabController = DefaultTabController.of(context)!;
-            tabController.animateTo(0);
-
-            sitesNotifier.setCurrentIndex(index - 1);
-          },
+          onTap: () => _showOnMap(context, index),
         );
       },
     );
+  }
+
+  void _showOnMap(BuildContext context, int index) {
+    final tabController = DefaultTabController.of(context)!;
+    tabController.animateTo(0);
+
+    sitesNotifier.setCurrentIndex(index - 1);
   }
 }

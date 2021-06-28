@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 import 'package:trailya/app/widgets/center.dart';
+import 'package:trailya/model/site.dart';
 import 'package:trailya/model/sites_notifier.dart';
 import 'package:trailya/model/visit.dart';
 import 'package:trailya/services/location_service.dart';
@@ -76,16 +77,6 @@ class _VisitsScreenState extends State<VisitsScreen> {
   @override
   Widget build(BuildContext context) {
     final currentSite = widget.sitesNotifier.currentSite;
-    print(
-        'Visits Screen state rebuild called with current site set to $currentSite');
-
-    if (!Provider.of<LocationService>(context, listen: false).enabled) {
-      return CenteredContent(
-        title: 'Location tracking disabled',
-        message: 'Enable it in Settings',
-      );
-    }
-
     return GoogleMap(
       onMapCreated: (controller) => _mapController.complete(controller),
       initialCameraPosition: CameraPosition(
@@ -97,20 +88,26 @@ class _VisitsScreenState extends State<VisitsScreen> {
       myLocationEnabled: true,
       myLocationButtonEnabled: true,
       circles: visits.toSet().cast(),
-      markers: currentSite == null
-          ? {}
-          : {
-              Marker(
-                markerId: MarkerId(currentSite.uniqueId),
-                icon: widget.markerIcon,
-                position: LatLng(currentSite.latitude!, currentSite.longitude!),
-                infoWindow: InfoWindow(
-                  title: currentSite.title,
-                  snippet: "${widget.formatDate(currentSite.exposureStartTime.millisecondsSinceEpoch.toDouble())} - ${widget.formatDate(currentSite.exposureEndTime.millisecondsSinceEpoch.toDouble())}\nDate added: ${widget.formatDate(currentSite.addedTime.millisecondsSinceEpoch.toDouble())}",
-                ),
-              ),
-            },
+      markers: _getSiteMarkers(),
     );
+  }
+
+  Set<Marker> _getSiteMarkers() {
+    String formatted(DateTime date) =>
+        widget.formatDate(date.millisecondsSinceEpoch.toDouble());
+
+    return widget.sitesNotifier.sites
+        .map((site) => Marker(
+              markerId: MarkerId(site.uniqueId),
+              icon: widget.markerIcon,
+              position: LatLng(site.latitude!, site.longitude!),
+              infoWindow: InfoWindow(
+                title: site.title,
+                snippet:
+                    '${formatted(site.exposureStartTime)} - ${formatted(site.exposureEndTime)}\nUpdated at ${formatted(site.addedTime)}',
+              ),
+            ))
+        .toSet();
   }
 
   void _recordVisit(visit) {
