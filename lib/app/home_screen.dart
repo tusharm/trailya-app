@@ -3,7 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:trailya/app/profile_screen.dart';
 import 'package:trailya/app/sites_screen.dart';
 import 'package:trailya/app/visits_screen.dart';
+import 'package:trailya/model/location_notifier.dart';
 import 'package:trailya/model/sites_notifier.dart';
+import 'package:trailya/services/location_service.dart';
 import 'package:trailya/services/sites_service.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -11,15 +13,16 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) {
-        final notifier = SitesNotifier();
-        Provider.of<SitesService>(context, listen: false)
-            .getSites(notifier.location)
-            .listen((sites) {
-          notifier.refreshSites(sites);
-        });
-        return notifier;
+        return SitesNotifier(
+          sitesService: Provider.of<SitesService>(context, listen: false),
+        );
       },
-      child: _buildContent(),
+      child: ChangeNotifierProvider(
+        create: (context) => LocationNotifier(
+          locationService: Provider.of<LocationService>(context, listen: false),
+        ),
+        child: _buildContent(),
+      ),
     );
   }
 
@@ -40,11 +43,16 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
         body: Consumer<SitesNotifier>(
-            builder: (c, notifier, _) => TabBarView(
+            builder: (c, sitesNotifier, _) => TabBarView(
                   physics: NeverScrollableScrollPhysics(),
                   children: [
-                    VisitsScreen(sitesNotifier: notifier),
-                    SitesScreen(sitesNotifier: notifier),
+                    Consumer<LocationNotifier>(
+                      builder: (c, locationNotifier, _) => VisitsScreen(
+                        sitesNotifier: sitesNotifier,
+                        locationNotifier: locationNotifier,
+                      ),
+                    ),
+                    SitesScreen(sitesNotifier: sitesNotifier),
                     ProfileScreen(),
                   ],
                 )),

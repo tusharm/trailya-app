@@ -2,30 +2,35 @@ import 'dart:collection';
 
 import 'package:flutter/foundation.dart';
 import 'package:trailya/model/site.dart';
+import 'package:trailya/services/sites_service.dart';
 
 class SitesNotifier extends ChangeNotifier {
-  List<Site> _sites = [];
-  int? _currentIndex;
-  final _location = 'NSW';
+  SitesNotifier({required this.sitesService}) {
+    setLocation('NSW');
+  }
 
-  String get location => _location;
+  Site? _selectedSite;
+  List<Site> _sites = [];
+  final SitesService sitesService;
+
   List<Site> get sites => UnmodifiableListView(_sites);
 
-  Site? get currentSite {
-    if (_currentIndex == null) {
-      return null;
-    }
+  Site? get currentSite => (_selectedSite == null) ? null : _selectedSite!;
 
-    return _sites[_currentIndex!];
-  }
-
-  void refreshSites(List<Site> sites) {
-    _sites = List.of(sites);
+  void setSelectedSite(Site site) {
+    _selectedSite = site;
     notifyListeners();
   }
+  
+  // Will be called from the Profile page
+  void setLocation(String location) {
+    sitesService.getSites(location).listen((sites) {
+      _refreshSites(sites);
+    });
+  }
 
-  void setCurrentIndex(int index) {
-    _currentIndex = index;
+  void _refreshSites(List<Site> sites) {
+    _sites = List.of(sites);
     notifyListeners();
   }
 }

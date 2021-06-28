@@ -42,16 +42,16 @@ class SitesScreen extends StatelessWidget {
             '${site.address}, ${site.suburb}, ${site.state}$postcodeText\n'
             '${dateFormat.format(site.exposureStartTime)} - ${dateFormat.format(site.exposureEndTime)}',
           ),
-          onTap: () => _showOnMap(context, index),
+          onTap: () => _showOnMap(context, site),
         );
       },
     );
   }
 
-  void _showOnMap(BuildContext context, int index) {
+  void _showOnMap(BuildContext context, Site site) {
     final tabController = DefaultTabController.of(context)!;
     tabController.animateTo(0);
 
-    sitesNotifier.setCurrentIndex(index - 1);
+    sitesNotifier.setSelectedSite(site);
   }
 }

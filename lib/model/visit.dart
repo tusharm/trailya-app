@@ -1,29 +1,33 @@
 import 'package:location/location.dart';
 
 class Visit {
-  Visit(this.loc) : startTime = loc.time!;
+  Visit(this.loc) : _startTime = loc.time!;
 
   static const int trackingMinStaySec = 60;
 
   final LocationData loc;
-  final double startTime;
-  double? endTime;
+  final double _startTime;
+  double? _endTime;
 
-  void end() {
-    endTime = DateTime.now().millisecondsSinceEpoch.toDouble();
-  }
+  String get uniqueId => '${loc.latitude}_${loc.longitude}_${loc.time}';
+
+  DateTime get start => DateTime.fromMillisecondsSinceEpoch(_startTime.toInt());
+  DateTime get end => DateTime.fromMillisecondsSinceEpoch(_endTime!.toInt());
+
+  void finish() => _endTime = DateTime.now().millisecondsSinceEpoch.toDouble();
 
   bool longEnoughSince(Visit other) {
     DateTime asDateTime(double millisSinceEpoch) =>
         DateTime.fromMillisecondsSinceEpoch(millisSinceEpoch.toInt());
 
-    final delta = asDateTime(startTime).difference(asDateTime(other.startTime));
+    final delta =
+        asDateTime(_startTime).difference(asDateTime(other._startTime));
     return delta.inSeconds > trackingMinStaySec;
   }
 
   Duration duration() {
     // TODO: shouldn't be called before endTime is set
-    final delta = endTime!.toInt() - startTime.toInt();
+    final delta = _endTime!.toInt() - _startTime.toInt();
     return Duration(milliseconds: delta);
   }
 
@@ -32,8 +36,8 @@ class Visit {
     return """
     Location Data:
       lat/lng: ${loc.latitude}/${loc.longitude}
-      startTime: ${DateTime.fromMillisecondsSinceEpoch(startTime.toInt())}
-      endTime: ${(endTime == null) ? '' : DateTime.fromMillisecondsSinceEpoch(endTime!.toInt())}
+      startTime: ${DateTime.fromMillisecondsSinceEpoch(_startTime.toInt())}
+      endTime: ${(_endTime == null) ? '' : DateTime.fromMillisecondsSinceEpoch(_endTime!.toInt())}
     """;
   }
 }

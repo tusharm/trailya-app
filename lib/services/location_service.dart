@@ -67,7 +67,7 @@ class LocationService {
             return null;
           }
 
-          lastVisited!.end();
+          lastVisited!.finish();
           final last = lastVisited;
           lastVisited = currentVisit;
           return last;
