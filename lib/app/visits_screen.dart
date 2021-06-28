@@ -2,27 +2,22 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:intl/intl.dart';
 import 'package:location/location.dart';
+import 'package:trailya/app/widgets/site_dialog.dart';
 import 'package:trailya/model/location_notifier.dart';
 import 'package:trailya/model/sites_notifier.dart';
 import 'package:trailya/services/location_service.dart';
+import 'package:trailya/utils/date_util.dart';
 
 class VisitsScreen extends StatefulWidget {
   VisitsScreen({required this.sitesNotifier, required this.locationNotifier});
 
-  final DateFormat format = DateFormat().add_jms();
   final BitmapDescriptor visitIcon =
       BitmapDescriptor.defaultMarkerWithHue(190.0);
   final BitmapDescriptor siteIcon = BitmapDescriptor.defaultMarker;
 
   final SitesNotifier sitesNotifier;
   final LocationNotifier locationNotifier;
-
-  String formatDate(double msSinceEpoch) {
-    return format
-        .format(DateTime.fromMillisecondsSinceEpoch(msSinceEpoch.toInt()));
-  }
 
   LatLng asLatLng(LocationData locationData) {
     return LatLng(locationData.latitude!, locationData.longitude!);
@@ -60,19 +55,18 @@ class _VisitsScreenState extends State<VisitsScreen> {
   }
 
   Set<Marker> _getSiteMarkers() {
-    String formatted(DateTime date) =>
-        widget.formatDate(date.millisecondsSinceEpoch.toDouble());
-
     final sites = widget.sitesNotifier.sites
         .map((site) => Marker(
               markerId: MarkerId(site.uniqueId),
               icon: widget.siteIcon,
               position: LatLng(site.latitude!, site.longitude!),
               infoWindow: InfoWindow(
-                title: site.title,
-                snippet:
-                    '${formatted(site.exposureStartTime)} - ${formatted(site.exposureEndTime)}\nUpdated at ${formatted(site.addedTime)}',
-              ),
+                  title: site.title,
+                  snippet:
+                      '${formatDate(site.exposureStartTime)} - ${formatDate(site.exposureEndTime)}\nUpdated at ${formatDate(site.addedTime)}',
+                  onTap: () {
+                    showSiteDialog(context: context, site: site);
+                  }),
             ))
         .toSet();
 
@@ -81,8 +75,9 @@ class _VisitsScreenState extends State<VisitsScreen> {
           icon: widget.visitIcon,
           position: widget.asLatLng(visit.loc),
           infoWindow: InfoWindow(
-            title: '${formatted(visit.start)} - ${formatted(visit.end)}',
-          ),
+              title: 'Visit',
+              snippet: '${formatDate(visit.start)} - ${formatDate(visit.end)}',
+              onTap: () {}),
         ));
 
     sites.addAll(visits);
