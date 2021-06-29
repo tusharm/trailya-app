@@ -7,6 +7,7 @@ import 'package:trailya/model/location_notifier.dart';
 import 'package:trailya/model/sites_notifier.dart';
 import 'package:trailya/services/location_service.dart';
 import 'package:trailya/services/sites_service.dart';
+import 'package:trailya/services/visits_store.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
@@ -20,6 +21,7 @@ class HomeScreen extends StatelessWidget {
       child: ChangeNotifierProvider(
         create: (context) => LocationNotifier(
           locationService: Provider.of<LocationService>(context, listen: false),
+          visitsStore: Provider.of<VisitsStore>(context, listen: false),
         ),
         child: _buildContent(),
       ),

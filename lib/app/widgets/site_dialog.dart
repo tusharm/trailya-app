@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:trailya/model/site.dart';
 import 'package:trailya/utils/date_util.dart';
 
-Future<bool?> showSiteDialog(
-    {required BuildContext context, required Site site}) {
+Future<bool?> showSiteDialog({
+  required BuildContext context,
+  required Site site,
+}) {
   return showDialog(
       context: context,
       builder: (context) {
