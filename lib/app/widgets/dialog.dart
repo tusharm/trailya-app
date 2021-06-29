@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:trailya/model/site.dart';
 import 'package:trailya/utils/date_util.dart';
@@ -86,4 +87,48 @@ Future<bool?> showSiteDialog({
           ),
         );
       });
+}
+
+Future showAlertDialog(
+  BuildContext context, {
+  required String title,
+  required String content,
+  String? cancelActionText,
+  required String defaultActionText,
+}) => showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text(title),
+      content: Text(content),
+      actions: <Widget>[
+        if (cancelActionText != null)
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(cancelActionText),
+          ),
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(true),
+          child: Text(defaultActionText),
+        ),
+      ],
+    ),
+  );
+
+Future<void> showExceptionAlertDialog(
+  BuildContext context, {
+  required String title,
+  required Exception exception,
+}) =>
+    showAlertDialog(
+      context,
+      title: title,
+      content: _message(exception),
+      defaultActionText: 'OK',
+    );
+
+String _message(Exception exception) {
+  if (exception is FirebaseException) {
+    return exception.message!;
+  }
+  return exception.toString();
 }

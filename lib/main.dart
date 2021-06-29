@@ -1,14 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:location/location.dart';
 import 'package:provider/provider.dart';
-import 'package:trailya/app/home_screen.dart';
+import 'package:trailya/app/landing_screen.dart';
+import 'package:trailya/services/auth.dart';
 import 'package:trailya/services/location_service.dart';
 import 'package:trailya/services/sites_service.dart';
 import 'package:trailya/services/visits_store.dart';
-
-import 'model/visit.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -64,9 +62,10 @@ class App extends StatelessWidget {
         providers: [
           Provider(create: (_) => SitesService()),
           Provider(create: (_) => visitsStore),
-          Provider(create: (_) => locationService)
+          Provider(create: (_) => locationService),
+          Provider(create: (_) => FirebaseAuthentication()),
         ],
-        child: HomeScreen(),
+        child: LandingScreen(),
       ),
     );
   }

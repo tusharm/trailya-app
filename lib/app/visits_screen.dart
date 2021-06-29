@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
-import 'package:trailya/app/widgets/site_dialog.dart';
+import 'package:trailya/app/widgets/dialog.dart';
 import 'package:trailya/model/location_notifier.dart';
 import 'package:trailya/model/sites_notifier.dart';
 import 'package:trailya/services/location_service.dart';

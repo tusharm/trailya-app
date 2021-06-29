@@ -36,6 +36,8 @@ class HomeScreen extends StatelessWidget {
           title: Center(
             child: Text('trailya'),
           ),
+          elevation: 5.0,
+          toolbarHeight: 120,
           bottom: TabBar(
             tabs: [
               Tab(icon: Icon(Icons.place_outlined)),
