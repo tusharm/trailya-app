@@ -7,6 +7,7 @@ import 'package:trailya/services/auth.dart';
 import 'package:trailya/services/location_service.dart';
 import 'package:trailya/services/sites_service.dart';
 import 'package:trailya/services/visits_store.dart';
+import 'package:trailya/utils/assets.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,8 +18,8 @@ Future<void> main() async {
   // Set the background messaging handler early on, as a named top-level function
   await setupMessaging();
 
+  await Assets.init();
   final service = await LocationService.create();
-
   final store = await VisitsStore.create();
 
   runApp(App(

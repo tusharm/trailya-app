@@ -7,14 +7,11 @@ import 'package:trailya/app/widgets/dialog.dart';
 import 'package:trailya/model/location_notifier.dart';
 import 'package:trailya/model/sites_notifier.dart';
 import 'package:trailya/services/location_service.dart';
+import 'package:trailya/utils/assets.dart';
 import 'package:trailya/utils/date_util.dart';
 
 class VisitsScreen extends StatefulWidget {
   VisitsScreen({required this.sitesNotifier, required this.locationNotifier});
-
-  final BitmapDescriptor visitIcon =
-      BitmapDescriptor.defaultMarkerWithHue(190.0);
-  final BitmapDescriptor siteIcon = BitmapDescriptor.defaultMarker;
 
   final SitesNotifier sitesNotifier;
   final LocationNotifier locationNotifier;
@@ -58,7 +55,7 @@ class _VisitsScreenState extends State<VisitsScreen> {
     final sites = widget.sitesNotifier.sites
         .map((site) => Marker(
               markerId: MarkerId(site.uniqueId),
-              icon: widget.siteIcon,
+              icon: Assets.redMarkerIcon!,
               position: LatLng(site.latitude!, site.longitude!),
               infoWindow: InfoWindow(
                   title: site.title,
@@ -72,7 +69,7 @@ class _VisitsScreenState extends State<VisitsScreen> {
 
     final visits = widget.locationNotifier.visits.map((visit) => Marker(
           markerId: MarkerId(visit.uniqueId),
-          icon: widget.visitIcon,
+          icon: Assets.blueMarkerIcon!,
           position: widget.asLatLng(visit.loc),
           infoWindow: InfoWindow(
               title: 'Visit',
