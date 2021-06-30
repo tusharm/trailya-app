@@ -10,7 +10,8 @@ class Assets {
 
   static Future<void> init() async {
     redMarkerIcon = await _loadImage('assets/red-marker.png', 150);
-    blueMarkerIcon = await _loadImage('assets/blue-marker.png', 150);
+    blueMarkerIcon =
+        BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue);
   }
 
   static Future<BitmapDescriptor> _loadImage(String path, int width) async {
