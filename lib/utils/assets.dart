@@ -9,7 +9,7 @@ class Assets {
   static BitmapDescriptor? blueMarkerIcon;
 
   static Future<void> init() async {
-    redMarkerIcon = await _loadImage('assets/red-marker.png', 100);
+    redMarkerIcon = await _loadImage('assets/red-marker.png', 150);
     blueMarkerIcon = await _loadImage('assets/blue-marker.png', 150);
   }
 
