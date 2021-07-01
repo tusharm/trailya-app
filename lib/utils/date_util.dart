@@ -1,10 +1,8 @@
-
 import 'package:intl/intl.dart';
 
-final DateFormat formatter = DateFormat().add_yMMMd().add_jms();
+final DateFormat displayFormatter = DateFormat().add_yMMMd().add_jms();
+final DateFormat onlyDateFormatter = DateFormat('MMM dd, yyyy');
 
-String formatDate(DateTime datetime) {
-  return formatter
-      .format(DateTime.fromMillisecondsSinceEpoch(datetime.millisecondsSinceEpoch.toInt()));
+String formatDate(DateTime datetime, [formatter]) {
+  return (formatter ?? displayFormatter).format(datetime);
 }
-
