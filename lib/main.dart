@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:trailya/app/landing_screen.dart';
 import 'package:trailya/services/auth.dart';
-import 'package:trailya/services/location_service.dart';
 import 'package:trailya/services/sites_service.dart';
 import 'package:trailya/services/visits_store.dart';
 import 'package:trailya/utils/assets.dart';
@@ -19,11 +18,8 @@ Future<void> main() async {
   await setupMessaging();
 
   await Assets.init();
-  final service = await LocationService.create();
   final store = await VisitsStore.create();
-
   runApp(App(
-    locationService: service,
     visitsStore: store,
   ));
 }
@@ -47,11 +43,8 @@ Future<void> setupMessaging() async {
 }
 
 class App extends StatelessWidget {
-  const App(
-      {Key? key, required this.locationService, required this.visitsStore})
-      : super(key: key);
+  const App({Key? key, required this.visitsStore}) : super(key: key);
 
-  final LocationService locationService;
   final VisitsStore visitsStore;
 
   @override
@@ -63,7 +56,6 @@ class App extends StatelessWidget {
         providers: [
           Provider(create: (_) => SitesService()),
           Provider(create: (_) => visitsStore),
-          Provider(create: (_) => locationService),
           Provider(create: (_) => FirebaseAuthentication()),
         ],
         child: LandingScreen(),

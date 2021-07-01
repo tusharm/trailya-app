@@ -1,10 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:trailya/app/profile_screen.dart';
 import 'package:trailya/app/sites_screen.dart';
 import 'package:trailya/app/visits_screen.dart';
 import 'package:trailya/app/widgets/dialog.dart';
+import 'package:trailya/app/widgets/waiting.dart';
 import 'package:trailya/model/location_notifier.dart';
 import 'package:trailya/model/sites_notifier.dart';
 import 'package:trailya/services/auth.dart';
@@ -15,19 +15,28 @@ import 'package:trailya/services/visits_store.dart';
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) {
-        return SitesNotifier(
-          sitesService: Provider.of<SitesService>(context, listen: false),
+    return FutureBuilder<LocationService>(
+      future: _initLocationService(context),
+      builder: (context, AsyncSnapshot<LocationService> snapshot) {
+        if (snapshot.hasError || !snapshot.hasData) {
+          return Scaffold(body: Waiting());
+        }
+
+        return ChangeNotifierProvider(
+          create: (context) {
+            return SitesNotifier(
+              sitesService: Provider.of<SitesService>(context, listen: false),
+            );
+          },
+          child: ChangeNotifierProvider(
+            create: (context) => LocationNotifier(
+              locationService: snapshot.data!,
+              visitsStore: Provider.of<VisitsStore>(context, listen: false),
+            ),
+            child: _buildContent(context),
+          ),
         );
       },
-      child: ChangeNotifierProvider(
-        create: (context) => LocationNotifier(
-          locationService: Provider.of<LocationService>(context, listen: false),
-          visitsStore: Provider.of<VisitsStore>(context, listen: false),
-        ),
-        child: _buildContent(context),
-      ),
     );
   }
 
@@ -73,6 +82,25 @@ class HomeScreen extends StatelessWidget {
                 )),
       ),
     );
+  }
+
+  Future<LocationService> _initLocationService(BuildContext context) async {
+    final locationService = await LocationService.create();
+    final enabled = await locationService.backgroundModeEnabled;
+
+    if (!enabled) {
+      final confirmed = await showAlertDialog(
+        context,
+        title: 'Enable background mode?',
+        content: 'Keep tracking you visits continuously',
+        defaultActionText: 'Enable',
+      );
+
+      if (confirmed) {
+        locationService.enableBackgroundMode(true);
+      }
+    }
+    return locationService;
   }
 
   Future<void> _signOut(BuildContext context) async {

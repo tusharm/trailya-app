@@ -95,24 +95,27 @@ Future showAlertDialog(
   required String content,
   String? cancelActionText,
   required String defaultActionText,
-}) => showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: Text(title),
-      content: Text(content),
-      actions: <Widget>[
-        if (cancelActionText != null)
+}) =>
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: Text(content),
+        actions: <Widget>[
+          if (cancelActionText != null)
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text(cancelActionText),
+            ),
           TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(cancelActionText),
+            onPressed: () {
+              Navigator.of(context).pop(true);
+            },
+            child: Text(defaultActionText),
           ),
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(true),
-          child: Text(defaultActionText),
-        ),
-      ],
-    ),
-  );
+        ],
+      ),
+    );
 
 Future<void> showExceptionAlertDialog(
   BuildContext context, {
