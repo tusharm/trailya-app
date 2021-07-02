@@ -93,6 +93,7 @@ class HomeScreen extends StatelessWidget {
         context,
         title: 'Enable background mode?',
         content: 'Keep tracking you visits continuously',
+        cancelActionText: 'Later',
         defaultActionText: 'Enable',
       );
 

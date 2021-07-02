@@ -22,12 +22,8 @@ class Site {
       addedTime: data['added_time'].toDate(),
       exposureStartTime: data['exposure_start_time'].toDate(),
       exposureEndTime: data['exposure_end_time'].toDate(),
-      latitude: data.containsKey('geocode')
-          ? data['geocode']['geometry']['location']['lat']
-          : -37.8194,
-      longitude: data.containsKey('geocode')
-          ? data['geocode']['geometry']['location']['lng']
-          : 144.9585,
+      latitude: data['latitude'],
+      longitude: data['longitude'],
     );
   }
 

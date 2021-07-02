@@ -47,7 +47,8 @@ class SitesScreen extends StatelessWidget {
     return ExpansionTile(
       key: PageStorageKey(sitesForDate.key),
       title: Text('${sitesForDate.key} (${sitesForDate.value.length} sites)'),
-      children: sitesForDate.value.mapIndexed((index, site) {
+      children:
+          sitesForDate.value.sortedBy((s) => s.suburb).mapIndexed((index, site) {
         final postcodeText = site.postcode != null ? ', ${site.postcode}' : '';
 
         return ListTile(
