@@ -31,28 +31,44 @@ class _VisitsScreenState extends State<VisitsScreen> {
   });
 
   final Completer<GoogleMapController> _mapController = Completer();
+  DateTime? selectedExposureDate;
+  List<DateTime> sortedExposureStartTimes = List.empty();
 
   @override
   Widget build(BuildContext context) {
     final currentSite = widget.sitesNotifier.currentSite;
+    sortedExposureStartTimes =
+        widget.sitesNotifier.sites.map((e) => e.exposureStartTime).toList();
+    sortedExposureStartTimes.sort();
 
-    return GoogleMap(
-      onMapCreated: (controller) => _mapController.complete(controller),
-      initialCameraPosition: CameraPosition(
-        target: currentSite == null
-            ? widget.asLatLng(initialLocation)
-            : LatLng(currentSite.latitude!, currentSite.longitude!),
-        zoom: 17.0,
+    return Scaffold(
+      body: GoogleMap(
+        onMapCreated: (controller) => _mapController.complete(controller),
+        initialCameraPosition: CameraPosition(
+          target: currentSite == null
+              ? widget.asLatLng(initialLocation)
+              : LatLng(currentSite.latitude!, currentSite.longitude!),
+          zoom: 17.0,
+        ),
+        myLocationEnabled: true,
+        myLocationButtonEnabled: true,
+        circles: _getVisitAreas(),
+        markers: _getSiteMarkers(),
       ),
-      myLocationEnabled: true,
-      myLocationButtonEnabled: true,
-      circles: _getVisitAreas(),
-      markers: _getSiteMarkers(),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: _onFabPressed,
+        label: Text('Filter'),
+        backgroundColor: Colors.indigo,
+        hoverColor: Colors.indigoAccent,
+        icon: Icon(Icons.calendar_today_outlined),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
     );
   }
 
   Set<Marker> _getSiteMarkers() {
     final sites = widget.sitesNotifier.sites
+        .where((site) => _withinFilterWindow(site.exposureStartTime))
         .map((site) => Marker(
               markerId: MarkerId(site.uniqueId),
               icon: Assets.redMarkerIcon!,
@@ -67,15 +83,18 @@ class _VisitsScreenState extends State<VisitsScreen> {
             ))
         .toSet();
 
-    final visits = widget.locationNotifier.visits.map((visit) => Marker(
-          markerId: MarkerId(visit.uniqueId),
-          icon: Assets.blueMarkerIcon!,
-          position: widget.asLatLng(visit.loc),
-          infoWindow: InfoWindow(
-              title: 'Visit',
-              snippet: '${formatDate(visit.start)} - ${formatDate(visit.end)}',
-              onTap: () {}),
-        ));
+    final visits = widget.locationNotifier.visits
+        .where((visit) => _withinFilterWindow(visit.start))
+        .map((visit) => Marker(
+              markerId: MarkerId(visit.uniqueId),
+              icon: Assets.blueMarkerIcon!,
+              position: widget.asLatLng(visit.loc),
+              infoWindow: InfoWindow(
+                  title: 'Visit',
+                  snippet:
+                      '${formatDate(visit.start)} - ${formatDate(visit.end)}',
+                  onTap: () {}),
+            ));
 
     sites.addAll(visits);
     return sites;
@@ -92,4 +111,28 @@ class _VisitsScreenState extends State<VisitsScreen> {
             consumeTapEvents: true,
             onTap: () {});
       }).toSet();
+
+  void _onFabPressed() async {
+    final date = await showDatePicker(
+        context: context,
+        helpText: 'Select exposure date',
+        cancelText: 'Clear',
+        confirmText: 'Apply',
+        initialDate: selectedExposureDate ?? sortedExposureStartTimes.last,
+        firstDate: DateTime.now().subtract(Duration(days: 30)),
+        lastDate: DateTime.now(),
+        selectableDayPredicate: (datetime) =>
+            sortedExposureStartTimes.contains(datetime));
+
+    setState(() {
+      selectedExposureDate = date;
+    });
+  }
+
+  bool _withinFilterWindow(DateTime datetime) {
+    if (selectedExposureDate == null) return true;
+
+    return datetime.isAfter(selectedExposureDate!) &&
+        datetime.isBefore(selectedExposureDate!.add(Duration(days: 1)));
+  }
 }

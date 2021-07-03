@@ -15,7 +15,7 @@ Future<void> main() async {
   await Firebase.initializeApp();
 
   // Set the background messaging handler early on, as a named top-level function
-  await setupMessaging();
+  // await setupMessaging();
 
   await Assets.init();
   final store = await VisitsStore.create();

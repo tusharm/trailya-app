@@ -92,7 +92,7 @@ class HomeScreen extends StatelessWidget {
       final confirmed = await showAlertDialog(
         context,
         title: 'Enable background mode?',
-        content: 'Keep tracking you visits continuously',
+        content: 'Keep tracking your visits continuously',
         cancelActionText: 'Later',
         defaultActionText: 'Enable',
       );
