@@ -34,7 +34,7 @@ class VisitsStore {
       },
     );
 
-    print('trailya SQLite path: $path/$db');
+    print('trailya sqlite path: $path/$db');
     return VisitsStore(db: db);
   }
 
@@ -50,7 +50,6 @@ class VisitsStore {
     final List<Map<String, dynamic>> results = await db.query(visitsTable);
 
     return results.map((data) {
-      print(data);
       return Visit.fromMap(data.map((key, value) => MapEntry(key, value ?? 0)));
     }).toList();
   }

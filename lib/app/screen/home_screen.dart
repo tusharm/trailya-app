@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:trailya/app/profile_screen.dart';
-import 'package:trailya/app/sites_screen.dart';
-import 'package:trailya/app/visits_screen.dart';
+import 'package:trailya/app/screen/profile_screen.dart';
+import 'package:trailya/app/screen/sites_screen.dart';
+import 'package:trailya/app/screen/visits_screen.dart';
 import 'package:trailya/app/widgets/dialog.dart';
 import 'package:trailya/app/widgets/waiting.dart';
+import 'package:trailya/model/config.dart';
 import 'package:trailya/model/location_notifier.dart';
 import 'package:trailya/model/sites_notifier.dart';
 import 'package:trailya/services/auth.dart';
 import 'package:trailya/services/location_service.dart';
-import 'package:trailya/services/sites_service.dart';
 import 'package:trailya/services/visits_store.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -17,24 +17,17 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return FutureBuilder<LocationService>(
       future: _initLocationService(context),
-      builder: (context, AsyncSnapshot<LocationService> snapshot) {
+      builder: (context, snapshot) {
         if (snapshot.hasError || !snapshot.hasData) {
           return Scaffold(body: Waiting());
         }
 
         return ChangeNotifierProvider(
-          create: (context) {
-            return SitesNotifier(
-              sitesService: Provider.of<SitesService>(context, listen: false),
-            );
-          },
-          child: ChangeNotifierProvider(
-            create: (context) => LocationNotifier(
-              locationService: snapshot.data!,
-              visitsStore: Provider.of<VisitsStore>(context, listen: false),
-            ),
-            child: _buildContent(context),
+          create: (context) => LocationNotifier(
+            locationService: snapshot.data!,
+            visitsStore: Provider.of<VisitsStore>(context, listen: false),
           ),
+          child: _buildContent(context),
         );
       },
     );
@@ -77,7 +70,11 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                     SitesScreen(sitesNotifier: sitesNotifier),
-                    ProfileScreen(),
+                    Consumer<UserConfig>(
+                      builder: (c, config, _) => ProfileScreen(
+                        config: config,
+                      ),
+                    ),
                   ],
                 )),
       ),

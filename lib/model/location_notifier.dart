@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:trailya/model/visit.dart';
 import 'package:trailya/services/location_service.dart';
@@ -5,7 +7,7 @@ import 'package:trailya/services/visits_store.dart';
 
 class LocationNotifier extends ChangeNotifier {
   LocationNotifier({required this.locationService, required this.visitsStore}) {
-    locationService.visits().listen(_recordVisit);
+    streamSubscription = locationService.visits().listen(_recordVisit);
 
     visitsStore.visits().then((List<Visit> existingVisits) {
       _visits.addAll(existingVisits);
@@ -13,6 +15,7 @@ class LocationNotifier extends ChangeNotifier {
     });
   }
 
+  late StreamSubscription<Visit> streamSubscription;
   final LocationService locationService;
   final VisitsStore visitsStore;
 
@@ -26,5 +29,10 @@ class LocationNotifier extends ChangeNotifier {
       notifyListeners();
     });
   }
-}
 
+  @override
+  void dispose() {
+    streamSubscription.cancel();
+    super.dispose();
+  }
+}

@@ -37,6 +37,7 @@ class _VisitsScreenState extends State<VisitsScreen> {
   @override
   Widget build(BuildContext context) {
     final currentSite = widget.sitesNotifier.currentSite;
+
     sortedExposureStartTimes =
         widget.sitesNotifier.sites.map((e) => e.exposureStartTime).toList();
     sortedExposureStartTimes.sort();
