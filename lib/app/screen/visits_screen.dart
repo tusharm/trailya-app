@@ -56,7 +56,7 @@ class _VisitsScreenState extends State<VisitsScreen> {
           target: currentSite == null
               ? currentUserConfig.location.latlng
               : LatLng(currentSite.latitude!, currentSite.longitude!),
-          zoom: 10.0,
+          zoom: currentSite == null ? 10.0 : 17.0,
         ),
         myLocationEnabled: true,
         myLocationButtonEnabled: true,
