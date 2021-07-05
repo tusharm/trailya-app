@@ -68,10 +68,10 @@ class _VisitsScreenState extends State<VisitsScreen> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _onFabPressed,
-        label: Text('Filter'),
+        label: Text('By exposure date'),
         backgroundColor: Colors.indigo,
         hoverColor: Colors.indigoAccent,
-        icon: Icon(Icons.calendar_today_outlined),
+        icon: Icon(Icons.filter_alt_outlined),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
     );
