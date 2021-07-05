@@ -14,7 +14,9 @@ Future<void> main() async {
 
   await Assets.init();
   final store = await VisitsStore.create();
+
   runApp(App(
     visitsStore: store,
   ));
 }
+

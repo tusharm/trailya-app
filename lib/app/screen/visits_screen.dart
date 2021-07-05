@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:provider/provider.dart';
 import 'package:trailya/app/widgets/dialog.dart';
 import 'package:trailya/model/location_notifier.dart';
 import 'package:trailya/model/sites_notifier.dart';
@@ -12,6 +13,15 @@ import 'package:trailya/utils/date_util.dart';
 
 class VisitsScreen extends StatefulWidget {
   VisitsScreen({required this.sitesNotifier, required this.locationNotifier});
+
+  static Widget create(SitesNotifier sitesNotifier) {
+    return Consumer<LocationNotifier>(
+      builder: (context, locationNotifier, _) => VisitsScreen(
+        sitesNotifier: sitesNotifier,
+        locationNotifier: locationNotifier,
+      ),
+    );
+  }
 
   final SitesNotifier sitesNotifier;
   final LocationNotifier locationNotifier;

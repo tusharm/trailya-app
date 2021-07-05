@@ -26,14 +26,10 @@ class App extends StatelessWidget {
           ChangeNotifierProxyProvider<UserConfig, SitesNotifier>(
               create: (_) => SitesNotifier(sitesService: SitesService()),
               update: (context, userConfig, sitesNotifier) {
-                if (sitesNotifier == null) {
-                  throw ArgumentError.notNull('sitesNotifier');
-                }
-
-                sitesNotifier.update(userConfig);
+                sitesNotifier!.update(userConfig);
                 return sitesNotifier;
               }),
-          Provider(create: (_) => visitsStore),
+          Provider.value(value: visitsStore),
         ],
         child: Landing(),
       ),

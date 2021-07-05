@@ -7,6 +7,12 @@ import 'package:trailya/services/auth.dart';
 class ProfileScreen extends StatelessWidget {
   ProfileScreen({required this.config});
 
+  static Widget create() {
+    return Consumer<UserConfig>(
+      builder: (context, config, _) => ProfileScreen(config: config),
+    );
+  }
+
   final UserConfig config;
 
   @override
@@ -21,60 +27,95 @@ class ProfileScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _buildAvatar(user),
             SizedBox(height: 10),
-            if (user.email != null)
-              Text(
-                user.email!,
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.black, fontSize: 15),
-              ),
-            SizedBox(height: 20),
-            _buildStateSelector()
+            _buildUserInfo(user),
+            SizedBox(height: 10),
+            _buildStateSelector(),
           ],
         ),
       ),
     );
+  }
+
+  Widget _buildUserInfo(User user) {
+    final info = user.email != null
+        ? user.email!
+        : (user.isAnonymous ? 'Anonymous' : '');
+
+    final widget = Column(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: Colors.white,
+              width: 3.0,
+            ),
+          ),
+          child: CircleAvatar(
+            maxRadius: 50,
+            backgroundImage: NetworkImage(
+              user.photoURL != null
+                  ? user.photoURL!
+                  : 'https://source.unsplash.com/random?australia',
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 8,
+        ),
+        Text(
+          info,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 15,
+          ),
+        )
+      ],
+    );
+    return _withinCard(widget, Colors.indigo.shade300);
   }
 
   Card _buildStateSelector() {
-    return Card(
-      shape: RoundedRectangleBorder(),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          children: [
-            Text(
-              'Choose state',
-              style: TextStyle(
-                fontSize: 20,
-              ),
-            ),
-            SizedBox(height: 8),
-            RadioListTile<Location>(
-              title: Text(Location.NSW.asString()),
-              value: Location.NSW,
-              groupValue: config.location,
-              onChanged: _onChanged,
-            ),
-            RadioListTile<Location>(
-              title: Text(Location.VIC.asString()),
-              value: Location.VIC,
-              groupValue: config.location,
-              onChanged: _onChanged,
-            ),
-          ],
+    final widget = Column(
+      children: [
+        Text(
+          'Choose preferred location',
+          textAlign: TextAlign.left,
+          style: TextStyle(
+            fontSize: 20,
+          ),
         ),
-      ),
+        SizedBox(height: 20),
+        RadioListTile<Location>(
+          title: Text(Location.NSW.asString()),
+          value: Location.NSW,
+          groupValue: config.location,
+          onChanged: _onChanged,
+        ),
+        RadioListTile<Location>(
+          title: Text(Location.VIC.asString()),
+          value: Location.VIC,
+          groupValue: config.location,
+          onChanged: _onChanged,
+        ),
+      ],
     );
+
+    return _withinCard(widget, Colors.white);
   }
 
-  CircleAvatar _buildAvatar(User user) {
-    return CircleAvatar(
-      radius: 50,
-      backgroundImage:
-          user.photoURL != null ? NetworkImage(user.photoURL!) : null,
-      child: user.photoURL == null ? Icon(Icons.camera_alt, size: 50) : null,
+  Card _withinCard(Widget widget, Color color) {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      color: color,
+      child: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: widget,
+      ),
     );
   }
 

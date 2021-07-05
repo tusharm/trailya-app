@@ -5,7 +5,6 @@ import 'package:trailya/app/screen/sites_screen.dart';
 import 'package:trailya/app/screen/visits_screen.dart';
 import 'package:trailya/app/widgets/dialog.dart';
 import 'package:trailya/app/widgets/waiting.dart';
-import 'package:trailya/model/config.dart';
 import 'package:trailya/model/location_notifier.dart';
 import 'package:trailya/model/sites_notifier.dart';
 import 'package:trailya/services/auth.dart';
@@ -15,8 +14,10 @@ import 'package:trailya/services/visits_store.dart';
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final visitsStore = Provider.of<VisitsStore>(context, listen: false);
+
     return FutureBuilder<LocationService>(
-      future: _initLocationService(context),
+      future: LocationService.create(),
       builder: (context, snapshot) {
         if (snapshot.hasError || !snapshot.hasData) {
           return Scaffold(body: Waiting());
@@ -25,7 +26,7 @@ class HomeScreen extends StatelessWidget {
         return ChangeNotifierProvider(
           create: (context) => LocationNotifier(
             locationService: snapshot.data!,
-            visitsStore: Provider.of<VisitsStore>(context, listen: false),
+            visitsStore: visitsStore,
           ),
           child: _buildContent(context),
         );
@@ -63,42 +64,13 @@ class HomeScreen extends StatelessWidget {
             builder: (c, sitesNotifier, _) => TabBarView(
                   physics: NeverScrollableScrollPhysics(),
                   children: [
-                    Consumer<LocationNotifier>(
-                      builder: (c, locationNotifier, _) => VisitsScreen(
-                        sitesNotifier: sitesNotifier,
-                        locationNotifier: locationNotifier,
-                      ),
-                    ),
+                    VisitsScreen.create(sitesNotifier),
                     SitesScreen(sitesNotifier: sitesNotifier),
-                    Consumer<UserConfig>(
-                      builder: (c, config, _) => ProfileScreen(
-                        config: config,
-                      ),
-                    ),
+                    ProfileScreen.create(),
                   ],
                 )),
       ),
     );
-  }
-
-  Future<LocationService> _initLocationService(BuildContext context) async {
-    final locationService = await LocationService.create();
-    final enabled = await locationService.backgroundModeEnabled;
-
-    if (!enabled) {
-      final confirmed = await showAlertDialog(
-        context,
-        title: 'Enable background mode?',
-        content: 'Keep tracking your visits continuously',
-        cancelActionText: 'Later',
-        defaultActionText: 'Enable',
-      );
-
-      if (confirmed) {
-        locationService.enableBackgroundMode(true);
-      }
-    }
-    return locationService;
   }
 
   Future<void> _signOut(BuildContext context) async {

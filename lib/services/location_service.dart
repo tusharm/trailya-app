@@ -12,10 +12,10 @@ class LocationService {
   });
 
   static const int trackingRadiusMts = 2;
-  static const int trackingTimeIntervalMs = 5000;
+  static const int trackingTimeIntervalMs = 1000;
   static const double trackingDistanceIntervalMtr = 10;
-  static LocationService? instance; 
-  
+  static LocationService? instance;
+
   final Location location;
   final enabled;
 
@@ -23,33 +23,32 @@ class LocationService {
     if (instance != null) {
       return instance!;
     }
-    
+
     instance = await _init();
     return instance!;
   }
 
   static Future<LocationService> _init() async {
     final location = Location();
-    
+
     final enabled = await location.requestService();
-    if (!enabled) {
-      return LocationService._(
-        enabled: false,
-        location: location,
-      );
+    if (enabled) {
+      final status = await location.requestPermission();
+      if (status == PermissionStatus.granted) {
+        await location.changeSettings(
+          interval: trackingTimeIntervalMs,
+          distanceFilter: trackingDistanceIntervalMtr,
+        );
+
+        return LocationService._(
+          enabled: true,
+          location: location,
+        );
+      }
     }
-    
-    final status = await location.requestPermission();
-    final userPermitted = status == PermissionStatus.granted;
-    if (userPermitted) {
-      await location.changeSettings(
-        interval: trackingTimeIntervalMs,
-        distanceFilter: trackingDistanceIntervalMtr,
-      );
-    }
-    
+
     return LocationService._(
-      enabled: true,
+      enabled: false,
       location: location,
     );
   }
@@ -82,12 +81,5 @@ class LocationService {
         })
         .where((e) => e != null)
         .cast();
-  }
-
-  Future<bool> get backgroundModeEnabled async =>
-      await location.isBackgroundModeEnabled();
-
-  Future<void> enableBackgroundMode(bool enabled) async {
-    await location.enableBackgroundMode(enable: enabled);
   }
 }
