@@ -5,6 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 import 'package:trailya/app/widgets/dialog.dart';
+import 'package:trailya/model/config.dart';
 import 'package:trailya/model/location_notifier.dart';
 import 'package:trailya/model/sites_notifier.dart';
 import 'package:trailya/services/location_service.dart';
@@ -35,17 +36,13 @@ class VisitsScreen extends StatefulWidget {
 }
 
 class _VisitsScreenState extends State<VisitsScreen> {
-  final LocationData initialLocation = LocationData.fromMap({
-    'latitude': -33.87241362319646,
-    'longitude': 151.20726191291067,
-  });
-
   final Completer<GoogleMapController> _mapController = Completer();
   DateTime? selectedExposureDate;
   List<DateTime> sortedExposureStartTimes = List.empty();
 
   @override
   Widget build(BuildContext context) {
+    final currentUserConfig = Provider.of<UserConfig>(context, listen: false);
     final currentSite = widget.sitesNotifier.currentSite;
 
     sortedExposureStartTimes =
@@ -57,9 +54,9 @@ class _VisitsScreenState extends State<VisitsScreen> {
         onMapCreated: (controller) => _mapController.complete(controller),
         initialCameraPosition: CameraPosition(
           target: currentSite == null
-              ? widget.asLatLng(initialLocation)
+              ? currentUserConfig.location.latlng
               : LatLng(currentSite.latitude!, currentSite.longitude!),
-          zoom: 17.0,
+          zoom: 10.0,
         ),
         myLocationEnabled: true,
         myLocationButtonEnabled: true,
@@ -111,7 +108,9 @@ class _VisitsScreenState extends State<VisitsScreen> {
     return sites;
   }
 
-  Set<Circle> _getVisitAreas() => widget.locationNotifier.visits.map((visit) {
+  Set<Circle> _getVisitAreas() => widget.locationNotifier.visits
+          .where((visit) => _withinFilterWindow(visit.start))
+          .map((visit) {
         return Circle(
             circleId: CircleId(visit.uniqueId),
             fillColor: Colors.lightBlueAccent.withOpacity(0.2),

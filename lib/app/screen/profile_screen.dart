@@ -89,13 +89,13 @@ class ProfileScreen extends StatelessWidget {
         ),
         SizedBox(height: 20),
         RadioListTile<Location>(
-          title: Text(Location.NSW.asString()),
+          title: Text('${Location.NSW}'),
           value: Location.NSW,
           groupValue: config.location,
           onChanged: _onChanged,
         ),
         RadioListTile<Location>(
-          title: Text(Location.VIC.asString()),
+          title: Text('${Location.VIC}'),
           value: Location.VIC,
           groupValue: config.location,
           onChanged: _onChanged,

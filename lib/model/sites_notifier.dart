@@ -19,7 +19,7 @@ class SitesNotifier extends ChangeNotifier {
   Site? get currentSite => (_selectedSite == null) ? null : _selectedSite!;
 
   void update(UserConfig userConfig) {
-    _setLocation(userConfig.location.asString());
+    _setLocation(userConfig.location.toString());
   }
 
   void setSelectedSite(Site site) {
