@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:trailya/app/widgets/custom_button.dart';
@@ -27,8 +28,6 @@ class SignInScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final auth = Provider.of<FirebaseAuthentication>(context, listen: false);
-
     return Scaffold(
       appBar: AppBar(
         title: Center(
@@ -39,15 +38,15 @@ class SignInScreen extends StatelessWidget {
       body: StreamBuilder<bool>(
         stream: bloc.isLoadingStream,
         initialData: false,
-        builder: (context, snapshot) =>
-            _buildContent(context, auth, snapshot.data!),
+        builder: (context, snapshot) => _buildContent(context, snapshot.data!),
       ),
       backgroundColor: Colors.grey[200],
     );
   }
 
-  Widget _buildContent(
-      BuildContext context, FirebaseAuthentication auth, bool isLoading) {
+  Widget _buildContent(BuildContext context, bool isLoading) {
+    final deviceInfo = Provider.of<AndroidDeviceInfo?>(context, listen: false);
+
     return Padding(
       padding: EdgeInsets.all(16.0),
       child: Column(
@@ -67,20 +66,21 @@ class SignInScreen extends StatelessWidget {
             },
           ),
           SizedBox(height: 8.0),
-          CustomButton(
-            color: Colors.indigo.shade100,
-            onPressed: () async {
-              if (isLoading) return;
-              await _signInAnonymously(context);
-            },
-            child: Text(
-              'Go Anonymous',
-              style: TextStyle(
-                fontSize: 15.0,
-                color: Colors.black87,
+          if (deviceInfo != null && !deviceInfo.isPhysicalDevice!)
+            CustomButton(
+              color: Colors.indigo.shade100,
+              onPressed: () async {
+                if (isLoading) return;
+                await _signInAnonymously(context);
+              },
+              child: Text(
+                'Go Anonymous',
+                style: TextStyle(
+                  fontSize: 15.0,
+                  color: Colors.black87,
+                ),
               ),
             ),
-          ),
         ],
       ),
     );

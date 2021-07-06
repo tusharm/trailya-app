@@ -1,3 +1,4 @@
+import 'package:device_info_plus_platform_interface/model/android_device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:trailya/app/landing.dart';
@@ -8,11 +9,12 @@ import 'package:trailya/services/sites_service.dart';
 import 'package:trailya/services/visits_store.dart';
 
 class App extends StatelessWidget {
-  App({required this.visitsStore});
+  App({required this.visitsStore, required this.deviceInfo});
 
   static const String appTitle = 'trailya';
 
   final VisitsStore visitsStore;
+  final AndroidDeviceInfo? deviceInfo;
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +23,7 @@ class App extends StatelessWidget {
       theme: ThemeData(primarySwatch: Colors.indigo),
       home: MultiProvider(
         providers: [
+          Provider.value(value: deviceInfo),
           Provider(create: (_) => FirebaseAuthentication()),
           ChangeNotifierProvider(create: (_) => UserConfig()),
           ChangeNotifierProxyProvider<UserConfig, SitesNotifier>(
