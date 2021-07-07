@@ -47,8 +47,7 @@ class SitesScreen extends StatelessWidget {
     return ExpansionTile(
       key: PageStorageKey(sitesForDate.key),
       title: Text('${sitesForDate.key} (${sitesForDate.value.length} sites)'),
-      children:
-          sitesForDate.value.sortedBy((s) => s.suburb).mapIndexed((index, site) {
+      children: _sort(sitesForDate.value).mapIndexed((index, site) {
         final postcodeText = site.postcode != null ? ', ${site.postcode}' : '';
 
         return ListTile(
@@ -65,6 +64,19 @@ class SitesScreen extends StatelessWidget {
         );
       }).toList(),
     );
+  }
+
+  List<Site> _sort(List<Site> sites) {
+    return sites.sorted((a, b) {
+      var result = a.suburb.compareTo(b.suburb);
+      if (result == 0) {
+        result = a.title.compareTo(b.title);
+        if (result == 0) {
+          result = b.exposureStartTime.compareTo(a.exposureStartTime);
+        }
+      }
+      return result;
+    });
   }
 
   void _showOnMap(BuildContext context, Site site) {
