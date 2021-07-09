@@ -8,7 +8,6 @@ import 'package:trailya/app/widgets/dialog.dart';
 import 'package:trailya/model/config.dart';
 import 'package:trailya/model/location_notifier.dart';
 import 'package:trailya/model/sites_notifier.dart';
-import 'package:trailya/services/location_service.dart';
 import 'package:trailya/utils/assets.dart';
 import 'package:trailya/utils/date_util.dart';
 
@@ -37,7 +36,6 @@ class VisitsScreen extends StatefulWidget {
 
 class _VisitsScreenState extends State<VisitsScreen> {
   final Completer<GoogleMapController> _mapController = Completer();
-  DateTime? selectedExposureDate;
 
   @override
   Widget build(BuildContext context) {
@@ -69,8 +67,7 @@ class _VisitsScreenState extends State<VisitsScreen> {
   }
 
   Set<Marker> _getSiteMarkers() {
-    final sites = widget.sitesNotifier.sites
-        .where((site) => _withinFilterWindow(site.exposureStartTime))
+    final sites = widget.sitesNotifier.filteredSites
         .map((site) => Marker(
               markerId: MarkerId(site.uniqueId),
               icon: Assets.redMarkerIcon!,
@@ -112,22 +109,22 @@ class _VisitsScreenState extends State<VisitsScreen> {
         helpText: 'Select exposure date',
         cancelText: 'Clear',
         confirmText: 'Apply',
-        initialDate: selectedExposureDate ?? sortedExposureStartTimes.last,
+        initialDate: widget.sitesNotifier.selectedExposureDate ??
+            sortedExposureStartTimes.last,
         firstDate: DateTime.now().subtract(Duration(days: 30)),
         lastDate: DateTime.now(),
         selectableDayPredicate: (datetime) =>
             !datetime.isBefore(sortedExposureStartTimes.first) &&
             !datetime.isAfter(sortedExposureStartTimes.last));
 
-    setState(() {
-      selectedExposureDate = date;
-    });
+    widget.sitesNotifier.selectedExposureDate = date;
   }
 
   bool _withinFilterWindow(DateTime datetime) {
-    if (selectedExposureDate == null) return true;
+    final selectedDate = widget.sitesNotifier.selectedExposureDate;
+    if (selectedDate == null) return true;
 
-    return datetime.isAfter(selectedExposureDate!) &&
-        datetime.isBefore(selectedExposureDate!.add(Duration(days: 1)));
+    return datetime.isAfter(selectedDate) &&
+        datetime.isBefore(selectedDate.add(Duration(days: 1)));
   }
 }

@@ -14,7 +14,7 @@ class SitesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _buildExpansionList(sitesNotifier.sites);
+    return _buildExpansionList(sitesNotifier.filteredSites);
   }
 
   Widget _buildExpansionList(List<Site> sites) {
