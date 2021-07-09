@@ -38,16 +38,11 @@ class VisitsScreen extends StatefulWidget {
 class _VisitsScreenState extends State<VisitsScreen> {
   final Completer<GoogleMapController> _mapController = Completer();
   DateTime? selectedExposureDate;
-  List<DateTime> sortedExposureStartTimes = List.empty();
 
   @override
   Widget build(BuildContext context) {
     final currentUserConfig = Provider.of<UserConfig>(context, listen: false);
     final currentSite = widget.sitesNotifier.currentSite;
-
-    sortedExposureStartTimes =
-        widget.sitesNotifier.sites.map((e) => e.exposureStartTime).toList();
-    sortedExposureStartTimes.sort();
 
     return Scaffold(
       body: GoogleMap(
@@ -60,7 +55,6 @@ class _VisitsScreenState extends State<VisitsScreen> {
         ),
         myLocationEnabled: true,
         myLocationButtonEnabled: true,
-        circles: _getVisitAreas(),
         markers: _getSiteMarkers(),
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -98,7 +92,7 @@ class _VisitsScreenState extends State<VisitsScreen> {
               icon: Assets.blueMarkerIcon!,
               position: widget.asLatLng(visit.loc),
               infoWindow: InfoWindow(
-                  title: 'Visit',
+                  title: 'You were here',
                   snippet:
                       '${formatDate(visit.start)} - ${formatDate(visit.end)}',
                   onTap: () {}),
@@ -108,21 +102,11 @@ class _VisitsScreenState extends State<VisitsScreen> {
     return sites;
   }
 
-  Set<Circle> _getVisitAreas() => widget.locationNotifier.visits
-          .where((visit) => _withinFilterWindow(visit.start))
-          .map((visit) {
-        return Circle(
-            circleId: CircleId(visit.uniqueId),
-            fillColor: Colors.lightBlueAccent.withOpacity(0.2),
-            strokeWidth: 2,
-            strokeColor: Colors.lightBlue,
-            center: widget.asLatLng(visit.loc),
-            radius: LocationService.trackingDistanceIntervalMtr,
-            consumeTapEvents: true,
-            onTap: () {});
-      }).toSet();
-
   void _onFabPressed() async {
+    final sortedExposureStartTimes =
+        widget.sitesNotifier.sites.map((e) => e.exposureStartTime).toList();
+    sortedExposureStartTimes.sort();
+
     final date = await showDatePicker(
         context: context,
         helpText: 'Select exposure date',
@@ -132,7 +116,8 @@ class _VisitsScreenState extends State<VisitsScreen> {
         firstDate: DateTime.now().subtract(Duration(days: 30)),
         lastDate: DateTime.now(),
         selectableDayPredicate: (datetime) =>
-            sortedExposureStartTimes.contains(datetime));
+            !datetime.isBefore(sortedExposureStartTimes.first) &&
+            !datetime.isAfter(sortedExposureStartTimes.last));
 
     setState(() {
       selectedExposureDate = date;
