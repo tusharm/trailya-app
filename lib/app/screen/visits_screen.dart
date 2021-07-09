@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:provider/provider.dart';
+import 'package:trailya/app/widgets/date_filter_fab.dart';
 import 'package:trailya/app/widgets/dialog.dart';
 import 'package:trailya/model/config.dart';
 import 'package:trailya/model/location_notifier.dart';
@@ -55,12 +56,8 @@ class _VisitsScreenState extends State<VisitsScreen> {
         myLocationButtonEnabled: true,
         markers: _getSiteMarkers(),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _onFabPressed,
-        label: Text('By exposure date'),
-        backgroundColor: Colors.indigo,
-        hoverColor: Colors.indigoAccent,
-        icon: Icon(Icons.filter_alt_outlined),
+      floatingActionButton: DateFilterFAB(
+        sitesNotifier: widget.sitesNotifier,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
     );
@@ -97,27 +94,6 @@ class _VisitsScreenState extends State<VisitsScreen> {
 
     sites.addAll(visits);
     return sites;
-  }
-
-  void _onFabPressed() async {
-    final sortedExposureStartTimes =
-        widget.sitesNotifier.sites.map((e) => e.exposureStartTime).toList();
-    sortedExposureStartTimes.sort();
-
-    final date = await showDatePicker(
-        context: context,
-        helpText: 'Select exposure date',
-        cancelText: 'Clear',
-        confirmText: 'Apply',
-        initialDate: widget.sitesNotifier.selectedExposureDate ??
-            sortedExposureStartTimes.last,
-        firstDate: DateTime.now().subtract(Duration(days: 30)),
-        lastDate: DateTime.now(),
-        selectableDayPredicate: (datetime) =>
-            !datetime.isBefore(sortedExposureStartTimes.first) &&
-            !datetime.isAfter(sortedExposureStartTimes.last));
-
-    widget.sitesNotifier.selectedExposureDate = date;
   }
 
   bool _withinFilterWindow(DateTime datetime) {

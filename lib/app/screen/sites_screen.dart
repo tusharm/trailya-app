@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:collection/collection.dart';
+import 'package:trailya/app/widgets/date_filter_fab.dart';
 import 'package:trailya/model/site.dart';
 import 'package:trailya/model/sites_notifier.dart';
 import 'package:trailya/utils/date_util.dart';
@@ -14,7 +15,13 @@ class SitesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _buildExpansionList(sitesNotifier.filteredSites);
+    return Scaffold(
+      body: _buildExpansionList(sitesNotifier.filteredSites),
+      floatingActionButton: DateFilterFAB(
+        sitesNotifier: sitesNotifier,
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+    );
   }
 
   Widget _buildExpansionList(List<Site> sites) {
