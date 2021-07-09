@@ -55,7 +55,7 @@ class HomeScreen extends StatelessWidget {
           bottom: TabBar(
             tabs: [
               Tab(icon: Icon(Icons.place_outlined)),
-              Tab(icon: Icon(Icons.notification_important_rounded)),
+              Tab(icon: Icon(Icons.format_list_numbered_outlined)),
               Tab(icon: Icon(Icons.person)),
             ],
           ),

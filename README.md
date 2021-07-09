@@ -16,6 +16,9 @@ A privacy-focussed mobile app that tracks your location and notifies if you've b
 | ----------------------------------------------------------------------- | ----------------------------------------------------------------------- | --------------------------------------------------------------- |
 | <img src="doc/images/site-details.png" alt="Site Details" width="200"/> | <img src="doc/images/sites-on-map.png" alt="Sites on map" width="200"/> | <img src="doc/images/my-visit.png" alt="My visit" width="200"/> |
 
+| Profile  |
+| -------  |
+| <img src="doc/images/profile.png" alt="Profile" width="200"/> |
 ### High-level design
 
 <br />
