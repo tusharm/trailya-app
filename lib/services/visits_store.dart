@@ -8,10 +8,15 @@ class VisitsStore {
   static final String dbName = 'trailya.db';
   static final String visitsTable = 'visits';
   static final int version = 1;
+  static VisitsStore? _instance;
 
   final Database db;
 
   static Future<VisitsStore> create() async {
+    if (_instance != null) {
+      return _instance!;
+    }
+
     var path = join(await getDatabasesPath(), dbName);
     final db = await openDatabase(
       path,
@@ -35,7 +40,8 @@ class VisitsStore {
     );
 
     print('trailya sqlite path: $path/$db');
-    return VisitsStore(db: db);
+    _instance = VisitsStore(db: db);
+    return _instance!;
   }
 
   Future<int> persist(Visit visit) async {
@@ -46,11 +52,20 @@ class VisitsStore {
     );
   }
 
-  Future<List<Visit>> visits() async {
+  Future<List<Visit>> all() async {
     final List<Map<String, dynamic>> results = await db.query(visitsTable);
 
     return results.map((data) {
       return Visit.fromMap(data.map((key, value) => MapEntry(key, value ?? 0)));
     }).toList();
+  }
+
+  Future<int> deleteBefore(DateTime datetime) async {
+    final timestamp = datetime.millisecondsSinceEpoch;
+    return await db.delete(
+      visitsTable,
+      where: 'time <= ?',
+      whereArgs: [timestamp],
+    );
   }
 }

@@ -9,7 +9,7 @@ class LocationNotifier extends ChangeNotifier {
   LocationNotifier({required this.locationService, required this.visitsStore}) {
     streamSubscription = locationService.visits().listen(_recordVisit);
 
-    visitsStore.visits().then((List<Visit> existingVisits) {
+    visitsStore.all().then((List<Visit> existingVisits) {
       _visits.addAll(existingVisits);
       notifyListeners();
     });
