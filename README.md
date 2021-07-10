@@ -5,7 +5,7 @@ Mobile app to track COVID exposure sites in Australia
 ### Why is it needed?
 
 - State Health's COVID exposure site updates aren't easy to consume (eg. huge tables on webpages, multiple tweets, PDF files etc.)
-- How do I know with certainty if I was exposed?
+- How do I know if I was exposed (with reasonable confidence)?
 
 ### How does this help? 
 
