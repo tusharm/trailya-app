@@ -27,15 +27,15 @@ A privacy-focussed app which:
 
 | Sign In                                                      | Exposure Site List                                                          | Site                                                    |
 | ------------------------------------------------------------ | --------------------------------------------------------------------------- | ------------------------------------------------------- |
-| <img src="doc/images/signin.png" alt="Sign In" width="200"/> | <img src="doc/images/sites-list.png" alt="Exposure Site List" width="200"/> | <img src="doc/images/site.png" alt="Site" width="200"/> |
+| <img src="doc/images/signin.png" alt="Sign In" width="150"/> | <img src="doc/images/sites-list.png" alt="Exposure Site List" width="150"/> | <img src="doc/images/site.png" alt="Site" width="150"/> |
 
 | Site Details                                                            | Sites on map                                                            | My visits                                                       |
 | ----------------------------------------------------------------------- | ----------------------------------------------------------------------- | --------------------------------------------------------------- |
-| <img src="doc/images/site-details.png" alt="Site Details" width="200"/> | <img src="doc/images/sites-on-map.png" alt="Sites on map" width="200"/> | <img src="doc/images/my-visit.png" alt="My visit" width="200"/> |
+| <img src="doc/images/site-details.png" alt="Site Details" width="150"/> | <img src="doc/images/sites-on-map.png" alt="Sites on map" width="150"/> | <img src="doc/images/my-visit.png" alt="My visit" width="150"/> |
 
 | Profile  |
 | -------  |
-| <img src="doc/images/profile.png" alt="Profile" width="200"/> |
+| <img src="doc/images/profile.png" alt="Profile" width="150"/> |
 
 ### System design
 
