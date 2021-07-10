@@ -1,3 +1,5 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -31,12 +33,21 @@ class Location {
 }
 
 class UserConfig extends ChangeNotifier {
+  bool _crashReportEnabled = !kDebugMode;
   Location _location = Location.NSW;
 
   Location get location => _location;
 
+  bool get crashReportEnabled => _crashReportEnabled;
+
   set location(loc) {
     _location = loc;
+    notifyListeners();
+  }
+
+  set crashReportEnabled(bool enabled) {
+    _crashReportEnabled = enabled;
+    FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(enabled);
     notifyListeners();
   }
 }

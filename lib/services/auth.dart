@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class FirebaseAuthentication {
@@ -29,6 +30,7 @@ class FirebaseAuthentication {
           ),
         );
 
+        await FirebaseCrashlytics.instance.setUserIdentifier(userCredential.user!.uid);
         return userCredential.user;
       } else {
         throw FirebaseAuthException(

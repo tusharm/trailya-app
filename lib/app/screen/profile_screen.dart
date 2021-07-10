@@ -33,6 +33,8 @@ class ProfileScreen extends StatelessWidget {
             _buildUserInfo(user),
             SizedBox(height: 10),
             _buildStateSelector(),
+            SizedBox(height: 10),
+            _buildCrashReportSwitch(),
           ],
         ),
       ),
@@ -108,6 +110,28 @@ class ProfileScreen extends StatelessWidget {
     return _withinCard(widget, Colors.white);
   }
 
+  Widget _buildCrashReportSwitch() {
+    final widget = ListTile(
+      isThreeLine: true,
+      title: Text(
+        'Crash reporting enabled',
+        style: TextStyle(
+          fontSize: 20,
+        ),
+        textAlign: TextAlign.start,
+      ),
+      subtitle: Text(
+        'Send crash reports to developers for efficient crash troubleshooting',
+      ),
+      trailing: Switch(
+        value: config.crashReportEnabled,
+        activeColor: Colors.indigoAccent,
+        onChanged: (value) => config.crashReportEnabled = value,
+      ),
+    );
+    return _withinCard(widget, Colors.white);
+  }
+
   Card _withinCard(Widget widget, Color color) {
     return Card(
       shape: RoundedRectangleBorder(
@@ -121,7 +145,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  void _onChanged(Location? value){
+  void _onChanged(Location? value) {
     config.location = value;
   }
 }

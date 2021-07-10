@@ -2,6 +2,7 @@ import 'package:device_info_plus_platform_interface/model/android_device_info.da
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:trailya/app/landing.dart';
+import 'package:trailya/app/widgets/dialog.dart';
 import 'package:trailya/model/config.dart';
 import 'package:trailya/model/sites_notifier.dart';
 import 'package:trailya/services/auth.dart';
