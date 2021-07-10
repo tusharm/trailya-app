@@ -25,25 +25,19 @@ A privacy-focussed app which:
 
 ### Screenshots
 
-| Sign In                                                      | Exposure Site List                                                          | Site                                                    |
-| ------------------------------------------------------------ | --------------------------------------------------------------------------- | ------------------------------------------------------- |
-| <img src="doc/images/signin.png" alt="Sign In" width="150"/> | <img src="doc/images/sites-list.png" alt="Exposure Site List" width="150"/> | <img src="doc/images/site.png" alt="Site" width="150"/> |
+| Sign In                                                      | Exposure Site List                                                          | Site                                                    | Site Details                                                            |
+| ------------------------------------------------------------ | --------------------------------------------------------------------------- | ------------------------------------------------------- | ----------------------------------------------------------------------- | 
+| <img src="doc/images/signin.png" alt="Sign In" width="150"/> | <img src="doc/images/sites-list.png" alt="Exposure Site List" width="150"/> | <img src="doc/images/site.png" alt="Site" width="150"/> | <img src="doc/images/site-details.png" alt="Site Details" width="150"/> |
 
-| Site Details                                                            | Sites on map                                                            | My visits                                                       |
-| ----------------------------------------------------------------------- | ----------------------------------------------------------------------- | --------------------------------------------------------------- |
-| <img src="doc/images/site-details.png" alt="Site Details" width="150"/> | <img src="doc/images/sites-on-map.png" alt="Sites on map" width="150"/> | <img src="doc/images/my-visit.png" alt="My visit" width="150"/> |
+| Sites on map                                                            | My visits                                                       | Profile  |
+| ----------------------------------------------------------------------- | --------------------------------------------------------------- | -------  |
+| <img src="doc/images/sites-on-map.png" alt="Sites on map" width="150"/> | <img src="doc/images/my-visit.png" alt="My visit" width="150"/> | <img src="doc/images/profile.png" alt="Profile" width="150"/> |
 
-| Profile  |
-| -------  |
-| <img src="doc/images/profile.png" alt="Profile" width="150"/> |
 
-### System design
+### Design
 
-<br />
-<img src="doc/images/system.png" alt="Design" width="300"/>
+|   System Design   |   Flutter Design   |
+|   -------------   |   --------------   |
+| <img src="doc/images/system.png" alt="Design" width="300"/> | <img src="doc/images/design.png" alt="Design" width="300"/> | 
 
-### Flutter design
-
-<br />
-<img src="doc/images/design.png" alt="Design" width="300"/>
 
