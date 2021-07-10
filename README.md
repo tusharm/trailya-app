@@ -4,18 +4,18 @@ Mobile app to track COVID exposure sites in Australia
 
 ### Why is it needed?
 
-- COVID exposure site updates from Health services are not easy to consume (eg. huge tables on webpages, multiple tweets, PDF files etc.)
+- State Health's COVID exposure site updates aren't easy to consume (eg. huge tables on webpages, multiple tweets, PDF files etc.)
 - How do I know with certainty if I was exposed?
 
 ### How does this help? 
 
-A privacy-focussed app which:
+A privacy-focussed mobile app that:
 
-- shows curent list of exposure sites; updates it regularly (daily, at present); also, shows them on a map.
-- uses tracking to record locations where the user has spent more than a minute. 
-  - these visits are also shown on the map to help determine if the user has been to an exposure site
-  - user vists are stored only on the device (not shared outside); they are removed if older than 15 days
-  - notify users if they've been to an exposure site (coming soon) 
+- syncs current exposure sites and shows them on a map and as a list
+- tracks users locations where they have spent more than a minute 
+  - visits are shown on the map, to help visualize if there is a possible exposure
+  - visits are stored only on the device (not shared outside); they are removed if older than 15 days
+  - notify if user has been to an exposure site (coming soon) 
 
 #### Notes
 
