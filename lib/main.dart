@@ -7,21 +7,19 @@ import 'package:trailya/utils/assets.dart';
 
 import 'app/app.dart';
 
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
-  // Set the background messaging handler early on, as a named top-level function
-  // await setupMessaging();
-
   await scheduleBackgroundJob();
   await Assets.init();
-  final store = await VisitsStore.create();
-
 
   final deviceInfo = DeviceInfoPlugin();
   final androidInfo = await deviceInfo.androidInfo;
-  runApp(App(visitsStore: store, deviceInfo: androidInfo));
-}
 
+  final store = await VisitsStore.create();
+  runApp(App(
+    visitsStore: store,
+    deviceInfo: androidInfo,
+  ));
+}

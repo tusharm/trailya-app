@@ -5,16 +5,23 @@ import 'package:trailya/app/screen/sites_screen.dart';
 import 'package:trailya/app/screen/visits_screen.dart';
 import 'package:trailya/app/widgets/dialog.dart';
 import 'package:trailya/app/widgets/waiting.dart';
+import 'package:trailya/model/config.dart';
 import 'package:trailya/model/location_notifier.dart';
 import 'package:trailya/model/sites_notifier.dart';
 import 'package:trailya/services/auth.dart';
 import 'package:trailya/services/location_service.dart';
+import 'package:trailya/services/message_service.dart';
 import 'package:trailya/services/visits_store.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final visitsStore = Provider.of<VisitsStore>(context, listen: false);
+    final userConfig = Provider.of<UserConfig>(context, listen: false);
+
+    final messageService = MessageService(context);
+    userConfig.addListener(() {
+      messageService.subscribeToSite(userConfig.location.state);
+    });
 
     return FutureBuilder<LocationService>(
       future: LocationService.create(),
@@ -26,7 +33,7 @@ class HomeScreen extends StatelessWidget {
         return ChangeNotifierProvider(
           create: (context) => LocationNotifier(
             locationService: snapshot.data!,
-            visitsStore: visitsStore,
+            visitsStore: Provider.of<VisitsStore>(context, listen: false),
           ),
           child: _buildContent(context),
         );

@@ -5,6 +5,7 @@ import 'package:trailya/app/landing.dart';
 import 'package:trailya/model/config.dart';
 import 'package:trailya/model/sites_notifier.dart';
 import 'package:trailya/services/auth.dart';
+import 'package:trailya/services/message_service.dart';
 import 'package:trailya/services/sites_service.dart';
 import 'package:trailya/services/visits_store.dart';
 
