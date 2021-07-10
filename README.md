@@ -1,10 +1,27 @@
 # trailya
 
-A privacy-focussed mobile app that tracks your location and notifies if you've been to a COVID exposure site.
+Mobile app to track COVID exposure sites in Australia
 
-- It pulls exposure sites from a Google Firestore collection (populated daily by a separate [job](https://github.com/tusharm/trailya-notifications)).
-- It tracks locations you visited for more than a minute (even in background mode) and stores it locally (imp: doesn't share with any remote service).
-- It will notify you if you past visits co-incide with an exposure site (coming soon!).
+### Why is it needed?
+
+- COVID exposure site updates from Health services are not easy to consume (eg. huge tables on webpages, multiple tweets, PDF files etc.)
+- How do I know with certainty if I was exposed?
+
+### How does this help? 
+
+A privacy-focussed app which:
+
+- shows curent list of exposure sites; updates it regularly (daily, at present); also, shows them on a map.
+- uses tracking to record locations where the user has spent more than a minute. 
+  - these visits are also shown on the map to help determine if the user has been to an exposure site
+  - user vists are stored only on the device (not shared outside); they are removed if older than 15 days
+  - notify users if they've been to an exposure site (coming soon) 
+
+#### Notes
+
+- Supported on Android; iOS support in future.
+- Supports NSW and VIC currently; other states will be supported soon
+
 
 ### Screenshots
 
@@ -19,7 +36,14 @@ A privacy-focussed mobile app that tracks your location and notifies if you've b
 | Profile  |
 | -------  |
 | <img src="doc/images/profile.png" alt="Profile" width="200"/> |
-### High-level design
+
+### System design
+
+<br />
+<img src="doc/images/system.png" alt="Design" width="300"/>
+
+### Flutter design
 
 <br />
 <img src="doc/images/design.png" alt="Design" width="300"/>
+
