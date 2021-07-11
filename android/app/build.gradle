@@ -21,10 +21,15 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
-def mapsApiKey = System.getenv('MAPS_API_KEY')
-if(mapsApiKey == null){
-    mapsApiKey = ""
-    throw new GradleException('Google Maps Api Key not configured. Set it in environment variable `MAPS_API_KEY`')
+def keyProperties = new Properties()
+def keyPropertiesFile = rootProject.file('key.properties')
+if (keyPropertiesFile.exists()) {
+    keyProperties.load(new FileInputStream(keyPropertiesFile))
+}
+
+def mapsApiKey = keyProperties.getProperty('mapsApiKey')
+if (mapsApiKey == null) {
+    throw new GradleException('Google Maps API Key not configured in key.properties')
 }
 
 apply plugin: 'com.android.application'
@@ -41,21 +46,27 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "au.com.trailya"
         minSdkVersion 20
         targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
-        manifestPlaceholders = [MAPS_API_KEY: mapsApiKey]
+        manifestPlaceholders = [MAPS_API_KEY: keyProperties['mapsApiKey']]
+    }
+
+    signingConfigs {
+        release {
+            keyAlias keyProperties['keyAlias']
+            keyPassword keyProperties['keyPassword']
+            storeFile keyProperties['storeFile'] ? file(keyProperties['storeFile']) : null
+            storePassword keyProperties['storePassword']
+        }
     }
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
         }
     }
 }

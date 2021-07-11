@@ -48,7 +48,10 @@ class HomeScreen extends StatelessWidget {
         appBar: AppBar(
           centerTitle: true,
           title: Center(
-            child: Text('trailya'),
+            child: Image.asset(
+              'assets/trailya.png',
+              width: 90,
+            ),
           ),
           elevation: 5.0,
           toolbarHeight: 120,
