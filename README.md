@@ -1,8 +1,8 @@
 # trailya
 
-<img src="doc/images/trailya-icon.png" alt="trailya" width="100"/> \
+<img src="doc/images/trailya-icon.png" alt="trailya" width="100"/> 
 
-Mobile app to track COVID exposure sites in Australia \
+Mobile app to track COVID exposure sites in Australia and notify user if they are potentially exposed. 
 
 ### Why is it needed?
 
