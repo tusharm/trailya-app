@@ -11,7 +11,6 @@ class LocationService {
     required this.location,
   });
 
-  static const int trackingRadiusMts = 2;
   static const int trackingTimeIntervalMs = 1000;
   static const double trackingDistanceIntervalMtr = 10;
   static LocationService? instance;
@@ -36,6 +35,7 @@ class LocationService {
       final status = await location.requestPermission();
       if (status == PermissionStatus.granted) {
         await location.changeSettings(
+          accuracy: LocationAccuracy.high,
           interval: trackingTimeIntervalMs,
           distanceFilter: trackingDistanceIntervalMtr,
         );

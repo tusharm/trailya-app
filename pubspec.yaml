@@ -38,7 +38,7 @@ dependencies:
 
   google_maps_flutter: ^2.0.6
   google_sign_in: ^5.0.4
-  location: ^4.1.1
+  location: ^4.3.0
   device_info_plus: ^2.0.1
   workmanager: ^0.4.1
 
