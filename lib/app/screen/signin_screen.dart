@@ -10,18 +10,22 @@ import 'package:trailya/model/signin_bloc.dart';
 import 'package:trailya/services/auth.dart';
 
 class SignInScreen extends StatelessWidget {
-  SignInScreen({required this.bloc});
+  SignInScreen({required this.bloc, required this.physicalDevice});
 
+  final bool physicalDevice;
   final SignInBloc bloc;
 
-  static Widget create(BuildContext context) {
+  static Widget create(BuildContext context, bool physicalDevice) {
     final auth = Provider.of<FirebaseAuthentication>(context, listen: false);
 
     return Provider<SignInBloc>(
       create: (_) => SignInBloc(auth: auth),
       dispose: (_, bloc) => bloc.dispose(),
       child: Consumer<SignInBloc>(
-        builder: (ctxt, bloc, _) => SignInScreen(bloc: bloc),
+        builder: (ctxt, bloc, _) => SignInScreen(
+          bloc: bloc,
+          physicalDevice: physicalDevice,
+        ),
       ),
     );
   }
@@ -44,47 +48,43 @@ class SignInScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildContent(BuildContext context, bool isLoading) {
-    final deviceInfo = Provider.of<AndroidDeviceInfo?>(context, listen: false);
-
-    return Padding(
-      padding: EdgeInsets.all(16.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          _buildHeader(isLoading),
-          SizedBox(height: 50.0),
-          CustomButtonWithAsset(
-            text: 'Sign in with Google',
-            asset: 'assets/google-logo.png',
-            color: Colors.white,
-            textColor: Colors.black87,
-            onPressed: () async {
-              if (isLoading) return;
-              await _signInWithGoogle(context);
-            },
-          ),
-          SizedBox(height: 8.0),
-          if (deviceInfo != null && !deviceInfo.isPhysicalDevice!)
-            CustomButton(
-              color: Colors.indigo.shade100,
+  Widget _buildContent(BuildContext context, bool isLoading) => Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            _buildHeader(isLoading),
+            SizedBox(height: 50.0),
+            CustomButtonWithAsset(
+              text: 'Sign in with Google',
+              asset: 'assets/google-logo.png',
+              color: Colors.white,
+              textColor: Colors.black87,
               onPressed: () async {
                 if (isLoading) return;
-                await _signInAnonymously(context);
+                await _signInWithGoogle(context);
               },
-              child: Text(
-                'Go Anonymous',
-                style: TextStyle(
-                  fontSize: 15.0,
-                  color: Colors.black87,
+            ),
+            SizedBox(height: 8.0),
+            if (!physicalDevice)
+              CustomButton(
+                color: Colors.indigo.shade100,
+                onPressed: () async {
+                  if (isLoading) return;
+                  await _signInAnonymously(context);
+                },
+                child: Text(
+                  'Go Anonymous',
+                  style: TextStyle(
+                    fontSize: 15.0,
+                    color: Colors.black87,
+                  ),
                 ),
               ),
-            ),
-        ],
-      ),
-    );
-  }
+          ],
+        ),
+      );
 
   Widget _buildHeader(bool isLoading) {
     if (isLoading) {

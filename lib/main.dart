@@ -40,15 +40,17 @@ Future<void> main() async {
 }
 
 Future<void> _run() async {
-  await scheduleBackgroundJob();
   await Assets.init();
 
   final deviceInfo = DeviceInfoPlugin();
   final androidInfo = await deviceInfo.androidInfo;
 
+  await scheduleBackgroundJob();
+
   final store = await VisitsStore.create();
+
   runApp(App(
     visitsStore: store,
-    deviceInfo: androidInfo,
+    physicalDevice: androidInfo.isPhysicalDevice ?? false,
   ));
 }
