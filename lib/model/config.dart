@@ -27,6 +27,7 @@ class Location {
   final String state;
   final LatLng latlng;
 
+  @override
   String toString() {
     return state;
   }

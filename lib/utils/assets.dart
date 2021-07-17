@@ -15,14 +15,6 @@ class Assets {
     blueMarkerIcon = await _getMarkerBitmap(75, Colors.blueAccent);
   }
 
-  static Future<BitmapDescriptor> _loadImage(String path, int width) async {
-    final data = await rootBundle.load(path);
-    final codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
-        targetWidth: width);
-    final fi = await codec.getNextFrame();
-    return _imageToBitmap(fi.image);
-  }
-
   static Future<BitmapDescriptor> _getMarkerBitmap(
       int size, Color color) async {
     final pictureRecorder = PictureRecorder();

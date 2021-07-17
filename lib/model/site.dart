@@ -15,8 +15,8 @@ class Site {
   factory Site.fromMap(Map<String, dynamic> data) {
     return Site(
       title: data['title'],
-      suburb: data['suburb'],
-      address: data['street_address'],
+      suburb: data['suburb'] ?? '',
+      address: data['street_address'] ?? '',
       state: data['state'],
       postcode: data['postcode'],
       addedTime: data['added_time'].toDate(),

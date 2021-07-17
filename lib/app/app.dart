@@ -1,4 +1,3 @@
-import 'package:device_info_plus_platform_interface/model/android_device_info.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nested/nested.dart';
