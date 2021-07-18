@@ -12,11 +12,10 @@ import 'package:trailya/services/sites_service.dart';
 import 'package:trailya/services/visits_store.dart';
 
 class App extends StatelessWidget {
-  App({required this.visitsStore, required this.physicalDevice});
+  App({required this.visitsStore});
 
   static const String appTitle = 'trailya';
 
-  final bool physicalDevice;
   final VisitsStore visitsStore;
 
   @override
@@ -57,7 +56,7 @@ class App extends StatelessWidget {
 
         return snapshot.hasData
             ? HomeScreen()
-            : SignInScreen.create(context, physicalDevice);
+            : SignInScreen.create(context);
       },
     );
   }

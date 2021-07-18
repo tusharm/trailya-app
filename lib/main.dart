@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:isolate';
 
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
@@ -41,16 +40,8 @@ Future<void> main() async {
 
 Future<void> _run() async {
   await Assets.init();
-
-  final deviceInfo = DeviceInfoPlugin();
-  final androidInfo = await deviceInfo.androidInfo;
-
   await scheduleBackgroundJob();
 
   final store = await VisitsStore.create();
-
-  runApp(App(
-    visitsStore: store,
-    physicalDevice: androidInfo.isPhysicalDevice ?? false,
-  ));
+  runApp(App(visitsStore: store));
 }

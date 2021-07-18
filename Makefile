@@ -6,7 +6,7 @@ appbundle: guard-BUILDNAME guard-BUILDNUMBER
 
 .PHONY: apk
 apk:
-	flutter build apk
+	flutter build apk 
 
 .PHONY: lint
 lint:

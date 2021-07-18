@@ -6,8 +6,8 @@ class MessageService {
   MessageService(BuildContext context) {
     FirebaseMessaging.onMessage.listen((event) {
       if (event.notification != null) {
-        // process notifications only if 'type' == 'site'
-        if (event.data['type'] == 'site') {
+        // process notifications only if 'type' == 'sites_update'
+        if (event.data['type'] == 'sites_update') {
           ScaffoldMessenger.of(context).showSnackBar(
             CustomSnackBar(
               text: event.notification!.body!,

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:trailya/app/widgets/custom_button.dart';
@@ -9,22 +10,18 @@ import 'package:trailya/model/signin_bloc.dart';
 import 'package:trailya/services/auth.dart';
 
 class SignInScreen extends StatelessWidget {
-  SignInScreen({required this.bloc, required this.physicalDevice});
+  SignInScreen({required this.bloc});
 
-  final bool physicalDevice;
   final SignInBloc bloc;
 
-  static Widget create(BuildContext context, bool physicalDevice) {
+  static Widget create(BuildContext context) {
     final auth = Provider.of<FirebaseAuthentication>(context, listen: false);
 
     return Provider<SignInBloc>(
       create: (_) => SignInBloc(auth: auth),
       dispose: (_, bloc) => bloc.dispose(),
       child: Consumer<SignInBloc>(
-        builder: (ctxt, bloc, _) => SignInScreen(
-          bloc: bloc,
-          physicalDevice: physicalDevice,
-        ),
+        builder: (ctxt, bloc, _) => SignInScreen(bloc: bloc),
       ),
     );
   }
@@ -34,7 +31,10 @@ class SignInScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text('trailya'),
+          child: Image.asset(
+            'assets/trailya.png',
+            width: 90,
+          ),
         ),
         elevation: 5.0,
       ),
@@ -66,7 +66,7 @@ class SignInScreen extends StatelessWidget {
               },
             ),
             SizedBox(height: 8.0),
-            if (!physicalDevice)
+            if (kDebugMode)
               CustomButton(
                 color: Colors.indigo.shade100,
                 onPressed: () async {
