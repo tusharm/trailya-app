@@ -5,43 +5,74 @@ import 'package:trailya/app/screen/sites_screen.dart';
 import 'package:trailya/app/screen/visits_screen.dart';
 import 'package:trailya/app/widgets/dialog.dart';
 import 'package:trailya/app/widgets/waiting.dart';
-import 'package:trailya/model/config.dart';
 import 'package:trailya/model/location_notifier.dart';
 import 'package:trailya/model/sites_notifier.dart';
+import 'package:trailya/model/user_config.dart';
 import 'package:trailya/services/auth.dart';
+import 'package:trailya/services/background.dart';
 import 'package:trailya/services/location_service.dart';
 import 'package:trailya/services/message_service.dart';
 import 'package:trailya/services/visits_store.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  MessageService? messageService;
+
   @override
   Widget build(BuildContext context) {
-    final userConfig = Provider.of<UserConfig>(context, listen: false);
+    // TODO: need a better way instead of chaining FutureBuilders
 
-    final messageService = MessageService(context);
-    userConfig.addListener(() {
-      messageService.subscribeToSite(userConfig.location.state);
-    });
-
-    return FutureBuilder<LocationService>(
-      future: LocationService.create(),
-      builder: (context, snapshot) {
-        if (snapshot.hasError || !snapshot.hasData) {
-          return Scaffold(body: Waiting());
+    return FutureBuilder<void>(
+      future: scheduleBackgroundJob(),
+      builder: (_, snapshot) {
+        if (!snapshot.hasData) {
+          return Waiting();
         }
 
-        return ChangeNotifierProvider(
-          create: (context) => LocationNotifier(
-            locationService: snapshot.data!,
-            visitsStore: Provider.of<VisitsStore>(context, listen: false),
-          ),
-          child: _buildContent(context),
+        return FutureBuilder<VisitsStore>(
+          future: VisitsStore.create(),
+          builder: (_, snapshot) {
+            if (!snapshot.hasData) {
+              return Waiting();
+            }
+
+            final visitsStore = snapshot.data!;
+            return FutureBuilder<LocationService>(
+              future: LocationService.create(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return Waiting();
+                }
+
+                final locationService = snapshot.data!;
+                return MultiProvider(
+                  providers: [
+                    Provider.value(value: visitsStore),
+                    Provider.value(value: locationService),
+                    ChangeNotifierProvider(create: (_) => UserConfig()),
+                    SitesNotifier.create(),
+                    LocationNotifier.create(),
+                  ],
+                  builder: (context, _) => _buildContents(context),
+                );
+              },
+            );
+          },
         );
       },
     );
   }
 
-  DefaultTabController _buildContent(BuildContext context) {
+  Widget _buildContents(BuildContext context) {
+    messageService = MessageService.create(context);
+    final sitesNotifier = Provider.of<SitesNotifier>(context, listen: false);
+    final locationNotifier =
+        Provider.of<LocationNotifier>(context, listen: false);
+
     return DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -70,15 +101,19 @@ class HomeScreen extends StatelessWidget {
             ],
           ),
         ),
-        body: Consumer<SitesNotifier>(
-            builder: (c, sitesNotifier, _) => TabBarView(
-                  physics: NeverScrollableScrollPhysics(),
-                  children: [
-                    VisitsScreen.create(sitesNotifier),
-                    SitesScreen(sitesNotifier: sitesNotifier),
-                    ProfileScreen.create(),
-                  ],
-                )),
+        body: TabBarView(
+          physics: NeverScrollableScrollPhysics(),
+          children: [
+            VisitsScreen(
+              sitesNotifier: sitesNotifier,
+              locationNotifier: locationNotifier,
+            ),
+            SitesScreen(
+              sitesNotifier: sitesNotifier,
+            ),
+            ProfileScreen.create(),
+          ],
+        ),
       ),
     );
   }
@@ -104,5 +139,14 @@ class HomeScreen extends StatelessWidget {
     if (didRequestSignOut == true) {
       await _signOut(context);
     }
+  }
+
+  @override
+  void dispose() {
+    if (messageService != null) {
+      messageService!.dispose();
+    }
+
+    super.dispose();
   }
 }

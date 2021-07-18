@@ -6,23 +6,14 @@ import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 import 'package:trailya/app/widgets/date_filter_fab.dart';
 import 'package:trailya/app/widgets/dialog.dart';
-import 'package:trailya/model/config.dart';
 import 'package:trailya/model/location_notifier.dart';
 import 'package:trailya/model/sites_notifier.dart';
+import 'package:trailya/model/user_config.dart';
 import 'package:trailya/utils/assets.dart';
 import 'package:trailya/utils/date_util.dart';
 
 class VisitsScreen extends StatefulWidget {
   VisitsScreen({required this.sitesNotifier, required this.locationNotifier});
-
-  static Widget create(SitesNotifier sitesNotifier) {
-    return Consumer<LocationNotifier>(
-      builder: (context, locationNotifier, _) => VisitsScreen(
-        sitesNotifier: sitesNotifier,
-        locationNotifier: locationNotifier,
-      ),
-    );
-  }
 
   final SitesNotifier sitesNotifier;
   final LocationNotifier locationNotifier;
@@ -50,11 +41,15 @@ class _VisitsScreenState extends State<VisitsScreen> {
           target: currentSite == null
               ? currentUserConfig.location.latlng
               : LatLng(currentSite.latitude!, currentSite.longitude!),
-          zoom: currentSite == null ? 10.0 : 17.0,
+          zoom:
+              currentSite == null ? currentUserConfig.location.zoomLevel : 17.0,
         ),
         myLocationEnabled: true,
         myLocationButtonEnabled: true,
         markers: _getSiteMarkers(),
+        onCameraMove: (position) {
+          print('zoom = ${position.zoom}, location = ${position.target}');
+        },
       ),
       floatingActionButton: DateFilterFAB(
         sitesNotifier: widget.sitesNotifier,

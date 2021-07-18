@@ -3,29 +3,25 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-// enum Location { NSW, VIC }
-//
-// extension LocationExtensions on Location {
-//   String asString() {
-//     return toString().split('.').last;
-//   }
-// }
-
 class Location {
-  Location._({required this.state, required this.latlng});
+  Location._(
+      {required this.state, required this.latlng, required this.zoomLevel});
 
   static Location NSW = Location._(
     state: 'NSW',
-    latlng: LatLng(-33.854768486192846, 151.21604587606268), // Opera House
+    latlng: LatLng(-33.72243952066477, 146.36028841137886),
+    zoomLevel: 5.5,
   );
 
   static Location VIC = Location._(
     state: 'VIC',
-    latlng: LatLng(-37.81790384139683, 144.96908283518505), // Fed Square
+    latlng: LatLng(-37.4147955041648, 144.90421805530787),
+    zoomLevel: 6.0,
   );
 
   final String state;
   final LatLng latlng;
+  final double zoomLevel;
 
   @override
   String toString() {
@@ -35,9 +31,12 @@ class Location {
 
 class UserConfig extends ChangeNotifier {
   bool _crashReportEnabled = !kDebugMode;
+  bool _trackingEnabled = false;
   Location _location = Location.NSW;
 
   Location get location => _location;
+
+  bool get trackingEnabled => _trackingEnabled;
 
   bool get crashReportEnabled => _crashReportEnabled;
 
@@ -49,6 +48,11 @@ class UserConfig extends ChangeNotifier {
   set crashReportEnabled(bool enabled) {
     _crashReportEnabled = enabled;
     FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(enabled);
+    notifyListeners();
+  }
+
+  set trackingEnabled(bool enabled) {
+    _trackingEnabled = enabled;
     notifyListeners();
   }
 }

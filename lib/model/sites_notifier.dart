@@ -2,12 +2,23 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:flutter/foundation.dart';
-import 'package:trailya/model/config.dart';
+import 'package:provider/provider.dart';
 import 'package:trailya/model/site.dart';
+import 'package:trailya/model/user_config.dart';
 import 'package:trailya/services/sites_service.dart';
 
 class SitesNotifier extends ChangeNotifier {
-  SitesNotifier({required this.sitesService});
+  SitesNotifier._({required this.sitesService});
+
+  /*
+    Creates an instance, which itself depends upon another ChangeNotifier - UserConfig
+   */
+  static ChangeNotifierProxyProvider<UserConfig, SitesNotifier> create() {
+    return ChangeNotifierProxyProvider<UserConfig, SitesNotifier>(
+      create: (_) => SitesNotifier._(sitesService: SitesService()),
+      update: (_, conf, notifier) => notifier!..update(conf),
+    );
+  }
 
   Site? _selectedSite;
   DateTime? _selectedExposureDate;

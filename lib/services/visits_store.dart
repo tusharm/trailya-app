@@ -5,7 +5,6 @@ import 'package:trailya/model/visit.dart';
 class VisitsStore {
   VisitsStore({required this.db});
 
-  static final String dbName = 'trailya.db';
   static final String visitsTable = 'visits';
   static final int version = 1;
   static VisitsStore? _instance;
@@ -17,7 +16,7 @@ class VisitsStore {
       return _instance!;
     }
 
-    var path = join(await getDatabasesPath(), dbName);
+    var path = join(await getDatabasesPath(), 'trailya.db');
     final db = await openDatabase(
       path,
       version: version,

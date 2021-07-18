@@ -19,15 +19,6 @@ class LocationService {
   final enabled;
 
   static Future<LocationService> create() async {
-    if (instance != null) {
-      return instance!;
-    }
-
-    instance = await _init();
-    return instance!;
-  }
-
-  static Future<LocationService> _init() async {
     final location = Location();
 
     final enabled = await location.requestService();
