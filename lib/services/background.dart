@@ -9,7 +9,7 @@ Future<void> scheduleBackgroundJob() async {
   return await manager.registerPeriodicTask(
     '1',
     visitsCleanupTask,
-    frequency: Duration(minutes: 1),
+    frequency: Duration(days: 1),
   );
 }
 

@@ -8,8 +8,10 @@ import 'package:trailya/services/location_service.dart';
 import 'package:trailya/services/visits_store.dart';
 
 class LocationNotifier extends ChangeNotifier {
-  LocationNotifier._(
-      {required this.locationService, required this.visitsStore}) {
+  LocationNotifier._({
+    required this.locationService,
+    required this.visitsStore,
+  }) {
     streamSubscription = locationService.visits().listen(_recordVisit);
 
     visitsStore.all().then((List<Visit> existingVisits) {
@@ -18,19 +20,14 @@ class LocationNotifier extends ChangeNotifier {
     });
   }
 
-  static SingleChildWidget create() {
-    return Consumer<VisitsStore>(
-      builder: (_, visitsStore, child) {
-        return Consumer<LocationService>(
-          builder: (_, locationService, child) {
-            return ChangeNotifierProvider(
-              create: (_) => LocationNotifier._(
-                visitsStore: visitsStore,
-                locationService: locationService,
-              ),
-              child: child,
-            );
-          },
+  static SingleChildWidget create(VisitsStore visitsStore) {
+    return Consumer<LocationService>(
+      builder: (_, locationService, child) {
+        return ChangeNotifierProvider(
+          create: (_) => LocationNotifier._(
+            visitsStore: visitsStore,
+            locationService: locationService,
+          ),
           child: child,
         );
       },

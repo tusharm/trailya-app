@@ -23,7 +23,9 @@ class _HomeScreenState extends State<HomeScreen> {
   MessageService? messageService;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) => _buildProviders(_buildContents);
+
+  Widget _buildProviders(Widget Function(BuildContext context) buildContent) {
     // TODO: need a better way instead of chaining FutureBuilders
 
     return FutureBuilder<void>(
@@ -51,13 +53,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 final locationService = snapshot.data!;
                 return MultiProvider(
                   providers: [
-                    Provider.value(value: visitsStore),
                     Provider.value(value: locationService),
                     ChangeNotifierProvider(create: (_) => UserConfig()),
                     SitesNotifier.create(),
-                    LocationNotifier.create(),
+                    LocationNotifier.create(visitsStore),
                   ],
-                  builder: (context, _) => _buildContents(context),
+                  builder: (context, _) => buildContent(context),
                 );
               },
             );
@@ -69,9 +70,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildContents(BuildContext context) {
     messageService = MessageService.create(context);
-    final sitesNotifier = Provider.of<SitesNotifier>(context, listen: false);
-    final locationNotifier =
-        Provider.of<LocationNotifier>(context, listen: false);
 
     return DefaultTabController(
       length: 3,
@@ -101,19 +99,15 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-        body: TabBarView(
-          physics: NeverScrollableScrollPhysics(),
-          children: [
-            VisitsScreen(
-              sitesNotifier: sitesNotifier,
-              locationNotifier: locationNotifier,
-            ),
-            SitesScreen(
-              sitesNotifier: sitesNotifier,
-            ),
-            ProfileScreen.create(),
-          ],
-        ),
+        body: Consumer<SitesNotifier>(
+            builder: (c, sitesNotifier, _) => TabBarView(
+                  physics: NeverScrollableScrollPhysics(),
+                  children: [
+                    VisitsScreen.create(sitesNotifier),
+                    SitesScreen(sitesNotifier: sitesNotifier),
+                    ProfileScreen.create(),
+                  ],
+                )),
       ),
     );
   }
@@ -122,8 +116,12 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       final auth = Provider.of<FirebaseAuthentication>(context, listen: false);
       await auth.signOut();
-    } catch (e) {
-      print(e.toString());
+    } on Exception catch (e) {
+      await showExceptionAlertDialog(
+        context,
+        title: 'Sign out failed',
+        exception: e,
+      );
     }
   }
 

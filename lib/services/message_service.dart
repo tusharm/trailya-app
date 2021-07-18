@@ -31,6 +31,7 @@ class MessageService {
 
   void _messageHandler(RemoteMessage event, BuildContext context) {
     if (event.notification != null) {
+
       // process notifications only if 'type' == 'sites_update'
       if (event.data['type'] == 'sites_update') {
         ScaffoldMessenger.of(context).showSnackBar(

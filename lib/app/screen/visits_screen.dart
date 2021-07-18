@@ -15,6 +15,15 @@ import 'package:trailya/utils/date_util.dart';
 class VisitsScreen extends StatefulWidget {
   VisitsScreen({required this.sitesNotifier, required this.locationNotifier});
 
+  static Widget create(SitesNotifier sitesNotifier) {
+    return Consumer<LocationNotifier>(
+      builder: (context, locationNotifier, _) => VisitsScreen(
+        sitesNotifier: sitesNotifier,
+        locationNotifier: locationNotifier,
+      ),
+    );
+  }
+
   final SitesNotifier sitesNotifier;
   final LocationNotifier locationNotifier;
 
@@ -47,9 +56,6 @@ class _VisitsScreenState extends State<VisitsScreen> {
         myLocationEnabled: true,
         myLocationButtonEnabled: true,
         markers: _getSiteMarkers(),
-        onCameraMove: (position) {
-          print('zoom = ${position.zoom}, location = ${position.target}');
-        },
       ),
       floatingActionButton: DateFilterFAB(
         sitesNotifier: widget.sitesNotifier,

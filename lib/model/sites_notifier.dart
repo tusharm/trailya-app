@@ -16,7 +16,10 @@ class SitesNotifier extends ChangeNotifier {
   static ChangeNotifierProxyProvider<UserConfig, SitesNotifier> create() {
     return ChangeNotifierProxyProvider<UserConfig, SitesNotifier>(
       create: (_) => SitesNotifier._(sitesService: SitesService()),
-      update: (_, conf, notifier) => notifier!..update(conf),
+      update: (_, conf, notifier) {
+        notifier!.update(conf);
+        return notifier;
+      },
     );
   }
 
