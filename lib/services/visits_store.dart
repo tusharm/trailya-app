@@ -32,7 +32,8 @@ class VisitsStore {
           speed_accuracy REAL,
           heading REAL,
           time REAL,
-          end_time REAL
+          end_time REAL,
+          exposed INTEGER
         )
         ''');
       },
@@ -49,6 +50,27 @@ class VisitsStore {
       visit.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+  }
+
+  Future<void> persistAll(List<Visit> visits) async {
+    final batch = db.batch();
+
+    visits.forEach((visit) {
+      batch.insert(
+        visitsTable,
+        visit.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    });
+
+    final result = await batch.commit(
+      continueOnError: true,
+    );
+
+    if (result.length != visits.length) {
+      throw Exception(
+          'Error in batch persist, expected ${visits.length} but persisted only ${result.length}');
+    }
   }
 
   Future<List<Visit>> all() async {

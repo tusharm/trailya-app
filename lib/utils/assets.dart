@@ -8,13 +8,13 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Assets {
   static BitmapDescriptor? redMarkerIcon;
-  static BitmapDescriptor? blueMarkerIcon;
+  static BitmapDescriptor? greenMarkerIcon;
   static BitmapDescriptor? orangeMarkerIcon;
 
   static Future<void> init() async {
     redMarkerIcon = await _getMarkerBitmap(75, Colors.red, line: true);
-    blueMarkerIcon = await _getMarkerBitmap(75, Colors.green);
-    orangeMarkerIcon = await _getMarkerBitmap(75, Colors.orange);
+    greenMarkerIcon = await _getMarkerBitmap(60, Colors.green.shade900);
+    orangeMarkerIcon = await _getMarkerBitmap(60, Colors.orange.shade800);
   }
 
   static Future<BitmapDescriptor> _getMarkerBitmap(
@@ -31,6 +31,7 @@ class Assets {
     canvas.drawCircle(center, size / 2.0, paint1);
     canvas.drawCircle(center, size / 2.2, paint2);
     canvas.drawCircle(center, size / 2.8, paint1);
+
     if (line) {
       canvas.drawRRect(
         RRect.fromLTRBR(

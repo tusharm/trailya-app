@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:trailya/model/site.dart';
+import 'package:trailya/model/visit.dart';
 import 'package:trailya/utils/date_util.dart';
 
 Future<bool?> showSiteDialog({
@@ -70,6 +71,106 @@ Future<bool?> showSiteDialog({
                   ),
                   Text(
                     formatDate(site.addedTime),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(
+                    height: 30.0,
+                  ),
+                  Text(
+                    'Location (lat,long)',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 12.0,
+                  ),
+                  Text(
+                    '${site.latitude!.toStringAsFixed(3)}, ${site.longitude!.toStringAsFixed(3)}',
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(
+                    height: 40.0,
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Center(child: Text('OK')),
+                  )
+                ],
+              ),
+            ),
+          ),
+        );
+      });
+}
+
+Future<bool?> showVisitDialog({
+  required BuildContext context,
+  required Visit visit,
+}) {
+  return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Center(
+            child: Column(
+              children: [
+                Text(
+                  'You were here',
+                  textAlign: TextAlign.center,
+                ),
+                if (visit.exposed)
+                  Text(
+                    '(possible exposure)',
+                    style: TextStyle(
+                      color: Colors.red.shade300
+                    ),
+                    textAlign: TextAlign.center,
+
+                  ),
+              ],
+            ),
+          ),
+          content: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Column(
+                children: [
+                  Text(
+                    'Visit Time',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 12.0,
+                  ),
+                  Text(
+                    '${formatDate(visit.start)} to ${formatDate(visit.end)}',
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(
+                    height: 30.0,
+                  ),
+                  Text(
+                    'Location (lat,long)',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 12.0,
+                  ),
+                  Text(
+                    '${visit.loc.latitude!.toStringAsFixed(5)}, ${visit.loc.longitude!.toStringAsFixed(5)}',
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(

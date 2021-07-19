@@ -12,7 +12,7 @@ class LocationService {
   });
 
   static const int trackingTimeIntervalMs = 1000;
-  static const double trackingDistanceIntervalMtr = 10;
+  static const double trackingDistanceIntervalMtr = 5;
   static LocationService? instance;
 
   final Location location;
@@ -59,7 +59,7 @@ class LocationService {
         .map((LocationData loc) {
           final currentVisit = Visit(loc);
 
-          if ((lastVisited == null) ||
+          if (lastVisited == null ||
               !currentVisit.longEnoughSince(lastVisited!)) {
             lastVisited = currentVisit;
             return null;

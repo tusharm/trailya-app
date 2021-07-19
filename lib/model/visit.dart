@@ -12,9 +12,16 @@ class Visit {
   static const int trackingMinStaySec = 60;
 
   final LocationData loc;
-  late final double _startTime;
   late final int _id;
+  late final double _startTime;
   double? _endTime;
+  int _exposed = 0;
+
+  bool get exposed => _exposed == 1;
+
+  set exposed(bool exposed) {
+    _exposed = exposed ? 1 : 0;
+  }
 
   String get uniqueId => _id.toString();
 
@@ -30,16 +37,17 @@ class Visit {
   }
 
   // Used to restore from local datastore
-  static Visit fromMap(Map<String, double> data) {
+  static Visit fromMap(Map<String, dynamic> data) {
     final location = LocationData.fromMap(data);
 
     final visit = Visit(location, id: data['id']!.toInt());
+    visit.exposed = data['exposed']!.toInt() == 1;
     visit.finish(msSinceEpoch: data['end_time']!.toInt());
 
     return visit;
   }
 
-  Map<String, double?> toMap() => {
+  Map<String, dynamic> toMap() => {
         'id': _id.toDouble(),
         'latitude': loc.latitude,
         'longitude': loc.longitude,
@@ -49,7 +57,8 @@ class Visit {
         'speed_accuracy': loc.speedAccuracy,
         'heading': loc.heading,
         'time': loc.time,
-        'end_time': _endTime
+        'end_time': _endTime,
+        'exposed': _exposed,
       };
 
   bool longEnoughSince(Visit other) {
@@ -66,6 +75,7 @@ class Visit {
     return """
     Location Data:
       lat/lng: ${loc.latitude}/${loc.longitude}
+      exposed: $exposed
       startTime: ${DateTime.fromMillisecondsSinceEpoch(_startTime.toInt())}
       endTime: ${(_endTime == null) ? '' : DateTime.fromMillisecondsSinceEpoch(_endTime!.toInt())}
     """;

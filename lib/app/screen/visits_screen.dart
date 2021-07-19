@@ -67,6 +67,7 @@ class _VisitsScreenState extends State<VisitsScreen> {
   Set<Marker> _getSiteMarkers() {
     final sites = widget.sitesNotifier.filteredSites
         .map((site) => Marker(
+              zIndex: 0.5,
               markerId: MarkerId(site.uniqueId),
               icon: Assets.redMarkerIcon!,
               position: LatLng(site.latitude!, site.longitude!),
@@ -83,15 +84,22 @@ class _VisitsScreenState extends State<VisitsScreen> {
     final visits = widget.locationNotifier.visits
         .where((visit) => _withinFilterWindow(visit.start))
         .map((visit) => Marker(
+              zIndex: 1.0,
               markerId: MarkerId(visit.uniqueId),
-              icon: Assets.blueMarkerIcon!,
+              icon: visit.exposed
+                  ? Assets.orangeMarkerIcon!
+                  : Assets.greenMarkerIcon!,
               position: widget.asLatLng(visit.loc),
               infoWindow: InfoWindow(
-                  title: 'You were here',
-                  snippet:
-                      '${formatDate(visit.start)} - ${formatDate(visit.end)}',
-                  onTap: () {}),
-            ));
+                title:
+                    'You were here ${visit.exposed ? '(possibly exposed!)' : ''}',
+                snippet:
+                    '${formatDate(visit.start)} - ${formatDate(visit.end)}',
+                  onTap: () {
+                    showVisitDialog(context: context, visit: visit);
+                  }),
+              ),
+            );
 
     sites.addAll(visits);
     return sites;
