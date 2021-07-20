@@ -26,13 +26,17 @@ A privacy-focussed mobile app that:
 
 ### Screenshots
 
-| Sign In                                                      | Exposure Site List                                                          | Site                                                    | Site Details                                                            |
-| ------------------------------------------------------------ | --------------------------------------------------------------------------- | ------------------------------------------------------- | ----------------------------------------------------------------------- |
-| <img src="doc/images/signin.png" alt="Sign In" width="150"/> | <img src="doc/images/sites-list.png" alt="Exposure Site List" width="150"/> | <img src="doc/images/site.png" alt="Site" width="150"/> | <img src="doc/images/site-details.png" alt="Site Details" width="150"/> |
+| Exposure Site List                                                          | Sites on map                                                            | Site                                                    |
+| --------------------------------------------------------------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------- |
+| <img src="doc/images/sites-list.png" alt="Exposure Site List" width="150"/> | <img src="doc/images/sites-on-map.png" alt="Sites on map" width="150"/> | <img src="doc/images/site.png" alt="Site" width="150"/> |
 
-| Sites on map                                                            | My visits                                                       | Profile                                                       |
-| ----------------------------------------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------------------- |
-| <img src="doc/images/sites-on-map.png" alt="Sites on map" width="150"/> | <img src="doc/images/my-visit.png" alt="My visit" width="150"/> | <img src="doc/images/profile.png" alt="Profile" width="150"/> |
+| Site Details                                                            | My visits                                                       | My exposures                                                            |
+| ----------------------------------------------------------------------- | --------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| <img src="doc/images/site-details.png" alt="Site Details" width="150"/> | <img src="doc/images/my-visit.png" alt="My visit" width="150"/> | <img src="doc/images/my-exposed-visit.png" alt="My visit" width="150"/> |
+
+| Profile                                                       |
+| ------------------------------------------------------------- |
+| <img src="doc/images/profile.png" alt="Profile" width="150"/> |
 
 ### Design
 
