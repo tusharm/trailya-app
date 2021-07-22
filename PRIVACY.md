@@ -2,7 +2,8 @@
 
 Trailya is a free and open-source mobile app with a strong privacy focus.
 
-It records user locations to determine if they have been to an exposure site in the past. Locations are stored locally and never shared outside device boundaries. Furthermore, past locations are deleted after 2 weeks, since they are not relevant from contact tracing perspective.
+- It makes current list of COVID exposure sites easily accessible.
+- It determines if users have been to one of the sites in the past. To this end, it records user's geolocations which are stored locally and never shared outside device boundaries. Furthermore, past locations are deleted after 2 weeks, since they are not relevant from contact tracing perspective.
 
 The official Privacy Policy is available below.
 
@@ -14,7 +15,7 @@ Thank you for choosing to be part of trailya ("we", "us", "our")! We are committ
 
 When you use our mobile application, as the case may be (the "App") and more generally, use any of our services (the "Services", which include the App), we appreciate that you are trusting us with your personal information. We take your privacy very seriously. In this privacy notice, we seek to explain to you in the clearest way possible what information we collect, how we use it and what rights you have in relation to it. We hope you take some time to read through it carefully, as it is important. If there are any terms in this privacy notice that you do not agree with, please discontinue use of our Services immediately.
 
-This privacy notice applies to all information collected through our Services (which, as described above, includes our App), as well as, any related services, sales, marketing or events.
+This privacy notice applies to all information collected through our Services (which, as described above, includes our App), as well as, any related services or events.
 
 Please read this privacy notice carefully as it will help you understand what we do with the information that we collect.
 
@@ -28,7 +29,7 @@ We collect personal information that you voluntarily provide to us when you regi
 
 The personal information that we collect depends on the context of your interactions with us and the App, the choices you make and the products and features you use. The personal information we collect include the following:
 
-_Google Login Data._ We provide you with the option to register with us using your existing Google account. If you choose to register in this way, we will collect the information described in the section called "HOW DO WE HANDLE YOUR SOCIAL LOGINS?" below.
+- _Google Login Data._ We provide you with the option to register with us using your existing Google account. If you choose to register in this way, we will collect the information described in the section called "HOW DO WE HANDLE YOUR GOOGLE LOGIN?" below.
 
 #### Information automatically collected
 
@@ -36,11 +37,8 @@ In Short: Some information is collected automatically when you visit our App.
 
 We automatically collect certain information when you use the App. This information does not reveal your specific identity (like your name or contact information) but may include location, device and usage information, such as your IP address, browser and device characteristics, operating system, language preferences, referring URLs, device name, country, information about how and when you use our App and other technical information. This information is primarily needed to maintain the security and operation of our App, and for our internal analytics and reporting purposes.
 
-Like many businesses, we also collect information through cookies and similar technologies.
-
 The information we collect includes:
 
-- Location Data. We record your location to inform you if you have been to an exposure site in the past. This data is stored locally on the device for a temporary period and will never be shared outside the device boundaries.
 - Log and Usage Data. Log and usage data is service-related, diagnostic, usage and performance information our servers automatically collect when you access or use our App and which we record in log files. Depending on how you interact with us, this log data may include your IP address, device information, browser type and settings and information about your activity in the App (such as the date/time stamps associated with your usage, pages and files viewed, searches and other actions you take such as which features you use), device event information (such as system activity, error reports (sometimes called 'crash dumps') and hardware settings).
 - Device Data. We collect device data such as information about your computer, phone, tablet or other device you use to access the App. Depending on the device used, this device data may include information such as your IP address (or proxy server), device and application identification numbers, location, browser type, hardware model Internet service provider and/or mobile carrier, operating system and system configuration information.
 
@@ -50,7 +48,7 @@ In Short: We collect information regarding your geolocation, mobile device, push
 
 If you use our App, we also collect the following information:
 
-- Geolocation Information. We may request access or permission to and track location-based information from your mobile device, either continuously or while you are using our App, to provide certain location-based services. If you wish to change our access or permissions, you may do so in your device's settings.
+- Location. The App requests access or permission to and track location-based information from your mobile device, either continuously or while you are using our App, to provide certain location-based services. If you wish to change our access or permissions, you may do so in your device's settings.
 - Mobile Device Data. We automatically collect device information (such as your mobile device ID, model and manufacturer), operating system, version information and system configuration information, device and application identification numbers, browser type and version, hardware model Internet service provider and/or mobile carrier, and Internet Protocol (IP) address (or proxy server). If you are using our App, we may also collect information about the phone network associated with your mobile device, your mobile device’s operating system or platform, the type of mobile device you use, your mobile device’s unique device ID and information about the features of our App you accessed.
 - Push Notifications. We may request to send you push notifications regarding your account or certain features of the App. If you wish to opt-out from receiving these types of communications, you may turn them off in your device's settings.
 
@@ -58,13 +56,13 @@ This information is primarily needed to maintain the security and operation of o
 
 ### HOW DO WE USE YOUR INFORMATION?
 
-In Short: We process your information for purposes based on legitimate business interests, the fulfillment of our contract with you, compliance with our legal obligations, and/or your consent.
+In Short: We process your information for purposes based on legitimate interests, the fulfillment of our contract with you, compliance with our legal obligations, and/or your consent.
 
 We use personal information collected via our App for a variety of purposes described below. We indicate the specific processing grounds we rely on next to each purpose listed below.
 
 We use the information we collect or receive:
 
-- To facilitate account creation and logon process. We use the information you allowed us to collect from Google to facilitate account creation and logon process for the performance of the contract. See the section below headed "HOW DO WE HANDLE YOUR SOCIAL LOGINS?" for further information.
+- To facilitate account creation and logon process. We use the information you allowed us to collect from Google to facilitate account creation and logon process for the performance of the contract. See the section below headed "HOW DO WE HANDLE YOUR GOOGLE LOGIN?" for further information.
 - Request feedback. We may use your information to request feedback and to contact you about your use of our App.
 - To manage user accounts. We may use your information for the purposes of managing our account and keeping it in working order.
 - To send administrative information to you. We may use your personal information to send you product, service and new feature information and/or information about changes to our terms, conditions, and policies.
@@ -79,7 +77,7 @@ In Short: We only share information with your consent, to comply with laws, to p
 We may process or share your data that we hold based on the following legal basis. More specifically, we may need to process your data or share your personal information in the following situations:
 
 - Google Maps Platform APIs. We may share your information with certain Google Maps Platform APIs (e.g., Google Maps API, Place API). To find out more about Google’s Privacy Policy, please refer to this [link](https://policies.google.com/privacy). We obtain and store on your device ('cache') your location for 2 weeks. You may revoke your consent anytime by contacting us at the contact details provided at the end of this document.
-- Vendors, Third-Party Service Providers. We may share your data with third-party vendors, service providers who perform services for us or on our behalf and require access to such information to do that work. Examples include: data analysis, email delivery, hosting services etc. We may allow selected third parties to use tracking technology on the App, which will enable them to collect data on our behalf about how you interact with our App over time. This information may be used to, among other things, analyze and track data, determine the popularity of certain content, pages or features, and better understand online activity. Unless described in this notice, we do not share, sell, rent or trade any of your information with third parties for their promotional purposes.
+- Vendors, Third-Party Service Providers. We may share your data with third-party vendors, service providers who perform services for us or on our behalf and require access to such information to do that work. Examples include: data analysis, hosting services etc. We may allow selected third parties to use tracking technology on the App, which will enable them to collect data on our behalf about how you interact with our App over time. This information may be used to, among other things, analyze and track data, determine the popularity of certain content, pages or features, and better understand online activity. Unless described in this notice, we do not share, sell, rent or trade any of your information with third parties for their promotional purposes.
 
 ### WHO WILL YOUR INFORMATION BE SHARED WITH?
 
@@ -94,7 +92,7 @@ We only share and disclose your information with the following third parties. If
 - Website Performance Monitoring
   - Crashlytics
 
-### HOW DO WE HANDLE YOUR SOCIAL LOGINS?
+### HOW DO WE HANDLE YOUR GOOGLE LOGIN?
 
 In Short: If you log in to our services using Google account, we may have access to certain information about you.
 
