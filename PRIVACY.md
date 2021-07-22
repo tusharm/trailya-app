@@ -4,7 +4,7 @@ Trailya is a free and open-source mobile app with a strong privacy focus.
 
 It records user locations to determine if they have been to an exposure site in the past. Locations are stored locally and never shared outside device boundaries. Furthermore, past locations are deleted after 2 weeks, since they are not relevant from contact tracing perspective.
 
-Our official Privacy Policy is available below.
+The official Privacy Policy is available below.
 
 ## Privacy Policy
 
