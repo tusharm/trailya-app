@@ -2,6 +2,7 @@ import 'package:trailya/services/visits_store.dart';
 import 'package:workmanager/workmanager.dart';
 
 const visitsCleanupTask = 'visitsCleanupTask';
+const maxStorageDurationInDays = 15;
 
 Future<void> scheduleBackgroundJob() async {
   final manager = Workmanager();
@@ -27,7 +28,7 @@ void callbackDispatcher() {
 Future<bool> _cleanupPastVisits() async {
   final store = await VisitsStore.create();
 
-  final threshold = DateTime.now().subtract(Duration(days: 15));
+  final threshold = DateTime.now().subtract(Duration(days: maxStorageDurationInDays));
   final deleted = await store.deleteBefore(threshold);
   print('No. of visits deleted: $deleted');
 
