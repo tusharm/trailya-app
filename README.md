@@ -4,9 +4,11 @@
 
 Mobile app to track COVID exposure sites in Australia and notify user if they are potentially exposed. 
 
-Twitter: [@aus_trailya](https://twitter.com/aus_trailya)
+(Privacy Policy)[./PRIVACY.md]
 
-Status: Beta testing. Please reply on the twitter handle if you want to be an early tester.
+*Twitter*: [@aus_trailya](https://twitter.com/aus_trailya)
+
+*Status*: Beta testing. Please reply on the twitter handle if you want to be an early tester.
 
 ### Why is it needed?
 

@@ -1,9 +1,10 @@
 # Trailya Privacy Policy
 
-Trailya is a free and open-source mobile app with a strong privacy focus.
+Trailya is an attempt to help keep our communities safe in these unprecedented times. It has no (nor will ever have) commercial interests and it will never share user personal data for commercial reasons.
 
-- It makes current list of COVID exposure sites easily accessible.
-- It determines if users have been to one of the sites in the past. To this end, it records user's geolocations which are stored locally and never shared outside device boundaries. Furthermore, past locations are deleted after 2 weeks, since they are not relevant from contact tracing perspective.
+The personal information it processes are:
+ - *Your location*. This is matched against exposure sites to identify if the user is potentially exposed. This is not shared outside the device boundaries and is removed after 15 days.
+ - *Your Google Signin information*. This is the data you've chosen to make public in your Google account
 
 The official Privacy Policy is available below.
 
