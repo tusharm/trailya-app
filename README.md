@@ -4,7 +4,7 @@
 
 Mobile app to track COVID exposure sites in Australia and notify user if they are potentially exposed. 
 
-(Privacy Policy)[./PRIVACY.md]
+[Privacy Policy](./PRIVACY.md)
 
 *Twitter*: [@aus_trailya](https://twitter.com/aus_trailya)
 
