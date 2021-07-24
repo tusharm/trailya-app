@@ -23,40 +23,24 @@ class SitesNotifier extends ChangeNotifier {
     );
   }
 
-  Site? _selectedSite;
-  DateTime? _selectedExposureDate;
-  List<Site> _sites = [];
   final SitesService sitesService;
   StreamSubscription<List<Site>>? streamSubscription;
 
-  List<Site> get sites => UnmodifiableListView(_sites);
+  Site? _currentSite;
 
-  List<Site> get filteredSites {
-    final sites = _sites.where((site) {
-      if (_selectedExposureDate == null) return true;
+  Site? get currentSite => _currentSite;
 
-      return site.start.isAfter(_selectedExposureDate!) &&
-          site.start.isBefore(_selectedExposureDate!.add(Duration(days: 1)));
-    });
-    return UnmodifiableListView(sites);
-  }
-
-  Site? get currentSite => (_selectedSite == null) ? null : _selectedSite!;
-
-  DateTime? get selectedExposureDate => _selectedExposureDate;
-
-  set selectedExposureDate(DateTime? date) {
-    _selectedExposureDate = date;
+  set currentSite(Site? site) {
+    _currentSite = site;
     notifyListeners();
   }
+
+  List<Site> _sites = [];
+
+  List<Site> get sites => UnmodifiableListView(_sites);
 
   void update(UserConfig userConfig) {
     _setLocation(userConfig.location.toString());
-  }
-
-  void setSelectedSite(Site site) {
-    _selectedSite = site;
-    notifyListeners();
   }
 
   Future<void> _setLocation(String location) async {
@@ -65,13 +49,9 @@ class SitesNotifier extends ChangeNotifier {
     }
 
     streamSubscription = sitesService.getSites(location).listen((sites) {
-      _refreshSites(sites);
+      _sites = List.of(sites);
+      notifyListeners();
     });
-  }
-
-  void _refreshSites(List<Site> sites) {
-    _sites = List.of(sites);
-    notifyListeners();
   }
 
   @override

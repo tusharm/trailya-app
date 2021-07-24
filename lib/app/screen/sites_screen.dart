@@ -1,27 +1,56 @@
+import 'package:animated_floatactionbuttons/animated_floatactionbuttons.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:collection/collection.dart';
-import 'package:trailya/app/widgets/date_filter_fab.dart';
+import 'package:provider/provider.dart';
 import 'package:trailya/app/widgets/dialog.dart';
+import 'package:trailya/app/widgets/fab/clear_filter_fab.dart';
+import 'package:trailya/app/widgets/fab/exposure_date_filter_fab.dart';
+import 'package:trailya/app/widgets/fab/sites_filter_fab.dart';
+import 'package:trailya/model/filters.dart';
+import 'package:trailya/model/location_notifier.dart';
 import 'package:trailya/model/site.dart';
 import 'package:trailya/model/sites_notifier.dart';
 import 'package:trailya/utils/date_util.dart';
 
 class SitesScreen extends StatelessWidget {
-  SitesScreen({required this.sitesNotifier});
-
   static DateFormat dateFormat = DateFormat('MMM dd, yyyy hh:mm a');
-
-  final SitesNotifier sitesNotifier;
 
   @override
   Widget build(BuildContext context) {
+    final locationNotifier = Provider.of<LocationNotifier>(context);
+    final sitesNotifier = Provider.of<SitesNotifier>(context);
+    final filters = Provider.of<Filters>(context);
+
+    final filteredSites = sitesNotifier.sites
+        .where((s) => filters.withinExposureDate(s))
+        .where((s) => filters.filterSuburb(s))
+        .toList();
+
     return Scaffold(
-      body: _buildExpansionList(sitesNotifier.filteredSites),
-      floatingActionButton: DateFilterFAB(
-        sitesNotifier: sitesNotifier,
-      ),
+      body: _buildExpansionList(filteredSites),
       floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+      floatingActionButton: AnimatedFloatingActionButton(
+        fabButtons: [
+          ClearFilterFAB(
+            locationNotifier: locationNotifier,
+            sitesNotifier: sitesNotifier,
+            filters: filters,
+          ),
+          ExposureDateFilterFAB(
+            locationNotifier: locationNotifier,
+            sitesNotifier: sitesNotifier,
+            filters: filters,
+          ),
+          SitesFilterFAB(
+            sitesNotifier: sitesNotifier,
+            filters: filters,
+          ),
+        ],
+        colorStartAnimation: Colors.indigo,
+        colorEndAnimation: Colors.indigo,
+        animatedIconData: AnimatedIcons.search_ellipsis,
+      ),
     );
   }
 
@@ -87,7 +116,7 @@ class SitesScreen extends StatelessWidget {
     });
   }
 
-  void _showOnMap(BuildContext context, Site site) async {
+  Future<void> _showOnMap(BuildContext context, Site site) async {
     if (site.lat == null || site.lng == null) {
       await showAlertDialog(
         context,
@@ -95,11 +124,13 @@ class SitesScreen extends StatelessWidget {
         content: 'No geolocation info to show on map',
         defaultActionText: 'OK',
       );
+      return;
     }
 
     final tabController = DefaultTabController.of(context)!;
     tabController.animateTo(0);
 
-    sitesNotifier.setSelectedSite(site);
+    final sitesNotifier = Provider.of<SitesNotifier>(context, listen: false);
+    sitesNotifier.currentSite = site;
   }
 }

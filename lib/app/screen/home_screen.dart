@@ -5,6 +5,7 @@ import 'package:trailya/app/screen/sites_screen.dart';
 import 'package:trailya/app/screen/visits_screen.dart';
 import 'package:trailya/app/widgets/dialog.dart';
 import 'package:trailya/app/widgets/waiting.dart';
+import 'package:trailya/model/filters.dart';
 import 'package:trailya/model/location_notifier.dart';
 import 'package:trailya/model/sites_notifier.dart';
 import 'package:trailya/model/user_config.dart';
@@ -57,6 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ChangeNotifierProvider(create: (_) => UserConfig()),
                     SitesNotifier.create(),
                     LocationNotifier.create(visitsStore),
+                    ChangeNotifierProvider(create: (_) => Filters()),
                   ],
                   builder: (context, _) => buildContent(context),
                 );
@@ -103,8 +105,8 @@ class _HomeScreenState extends State<HomeScreen> {
             builder: (c, sitesNotifier, _) => TabBarView(
                   physics: NeverScrollableScrollPhysics(),
                   children: [
-                    VisitsScreen.create(sitesNotifier),
-                    SitesScreen(sitesNotifier: sitesNotifier),
+                    VisitsScreen(),
+                    SitesScreen(),
                     ProfileScreen.create(),
                   ],
                 )),

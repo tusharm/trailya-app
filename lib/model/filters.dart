@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trailya/model/place.dart';
 import 'package:trailya/model/site.dart';
-import 'package:trailya/model/visit.dart';
 
 class Filters extends ChangeNotifier {
   DateTime? _exposureDate;
@@ -27,12 +26,6 @@ class Filters extends ChangeNotifier {
   set showVisitsOnly(bool enabled) {
     _showVisitsOnly = enabled;
     notifyListeners();
-  }
-
-  bool filterVisits<T extends Place>(T place) {
-    if (!_showVisitsOnly) return true;
-
-    return place.runtimeType == Visit;
   }
 
   String? _suburb;
