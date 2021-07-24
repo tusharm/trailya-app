@@ -7,12 +7,10 @@ import 'package:trailya/app/widgets/waiting.dart';
 import 'package:trailya/services/auth.dart';
 
 class App extends StatelessWidget {
-  static const String appTitle = 'trailya';
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: appTitle,
+      title: 'trailya',
       theme: ThemeData(primarySwatch: Colors.indigo),
       home: Provider(
         create: (_) => FirebaseAuthentication(),

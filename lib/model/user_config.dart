@@ -27,16 +27,29 @@ class Location {
   String toString() {
     return state;
   }
+
+  static Location fromString(String str) {
+    if (NSW.state.compareTo(str) == 0) {
+      return NSW;
+    } else if (VIC.state.compareTo(str) == 0) {
+      return VIC;
+    } else {
+      throw ArgumentError.value(
+          str, 'Invalid argument to Location.fromString()');
+    }
+  }
 }
 
 class UserConfig extends ChangeNotifier {
+  UserConfig({
+    required this.id,
+  });
+
+  final String id;
   bool _crashReportEnabled = !kDebugMode;
-  bool _trackingEnabled = false;
   Location _location = Location.NSW;
 
   Location get location => _location;
-
-  bool get trackingEnabled => _trackingEnabled;
 
   bool get crashReportEnabled => _crashReportEnabled;
 
@@ -51,8 +64,17 @@ class UserConfig extends ChangeNotifier {
     notifyListeners();
   }
 
-  set trackingEnabled(bool enabled) {
-    _trackingEnabled = enabled;
-    notifyListeners();
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'enable_crash_report': _crashReportEnabled ? 1 : 0,
+        'location': _location.state,
+      };
+
+  static UserConfig fromMap(Map<String, dynamic> data) {
+    final userConfig = UserConfig(id: data['id'].toString());
+    userConfig._location = Location.fromString(data['location']);
+    userConfig._crashReportEnabled = data['enable_crash_report'].toInt() == 1;
+
+    return userConfig;
   }
 }
