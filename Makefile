@@ -1,12 +1,13 @@
 .PHONY: appbundle
 appbundle: guard-BUILDNAME guard-BUILDNUMBER
 	flutter build appbundle \
+		--no-sound-null-safety \
 		--build-name=$(BUILDNAME) \
 		--build-number=$(BUILDNUMBER) 
 
 .PHONY: apk
 apk:
-	flutter build apk 
+	flutter build apk --no-sound-null-safety
 
 .PHONY: lint
 lint:
