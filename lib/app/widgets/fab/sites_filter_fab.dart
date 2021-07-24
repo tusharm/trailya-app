@@ -25,7 +25,7 @@ class SitesFilterFAB extends StatelessWidget {
   }
 
   void _onPressed(BuildContext context) async {
-    final sites = sitesNotifier.sites.map((s) => s.suburb.trim()).toSet().toList();
+    final sites = sitesNotifier.sites.map((s) => s.suburb).toSet().toList();
 
     sites.sort();
 

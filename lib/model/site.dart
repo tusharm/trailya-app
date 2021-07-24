@@ -21,10 +21,10 @@ class Site extends Place {
 
   factory Site.fromMap(Map<String, dynamic> data) {
     return Site(
-      title: data['title'],
-      suburb: data['suburb'] ?? '',
+      title: (data['title']).trim(),
+      suburb: (data['suburb'] ?? '').trim(),
       address: data['street_address'] ?? '',
-      state: data['state'],
+      state: (data['state']).trim(),
       postcode: data['postcode'],
       addedTime: data['added_time'].toDate(),
       exposureStartTime: data['exposure_start_time'].toDate(),

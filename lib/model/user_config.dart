@@ -9,13 +9,13 @@ class Location {
 
   static Location NSW = Location._(
     state: 'NSW',
-    latlng: LatLng(-33.8568, 151.2153),
+    latlng: LatLng(-33.94567321973889, 146.90911933779716),
     zoomLevel: 5.5,
   );
 
   static Location VIC = Location._(
     state: 'VIC',
-    latlng: LatLng(-37.4147955041648, 144.90421805530787),
+    latlng: LatLng(-37.30508110308386, 145.3751502558589),
     zoomLevel: 6.0,
   );
 
