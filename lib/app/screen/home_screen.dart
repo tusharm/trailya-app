@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:trailya/app/screen/map_screen.dart';
 import 'package:trailya/app/screen/profile_screen.dart';
 import 'package:trailya/app/screen/sites_screen.dart';
-import 'package:trailya/app/screen/visits_screen.dart';
 import 'package:trailya/app/widgets/dialog.dart';
 import 'package:trailya/app/widgets/waiting.dart';
 import 'package:trailya/model/filters.dart';
@@ -95,7 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
           bottom: TabBar(
             tabs: [
-              Tab(icon: Icon(Icons.place_outlined)),
+              Tab(icon: Icon(Icons.map_outlined)),
               Tab(icon: Icon(Icons.format_list_numbered_outlined)),
               Tab(icon: Icon(Icons.person)),
             ],
@@ -105,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
             builder: (c, sitesNotifier, _) => TabBarView(
                   physics: NeverScrollableScrollPhysics(),
                   children: [
-                    VisitsScreen(),
+                    MapScreen(),
                     SitesScreen(),
                     ProfileScreen.create(),
                   ],

@@ -26,14 +26,7 @@ class SitesNotifier extends ChangeNotifier {
   final SitesService sitesService;
   StreamSubscription<List<Site>>? streamSubscription;
 
-  Site? _currentSite;
-
-  Site? get currentSite => _currentSite;
-
-  set currentSite(Site? site) {
-    _currentSite = site;
-    notifyListeners();
-  }
+  Site? currentSite;
 
   List<Site> _sites = [];
 

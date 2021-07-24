@@ -18,12 +18,12 @@ import 'package:trailya/model/visit.dart';
 import 'package:trailya/utils/assets.dart';
 import 'package:trailya/utils/date_util.dart';
 
-class VisitsScreen extends StatefulWidget {
+class MapScreen extends StatefulWidget {
   @override
-  _VisitsScreenState createState() => _VisitsScreenState();
+  _MapScreenState createState() => _MapScreenState();
 }
 
-class _VisitsScreenState extends State<VisitsScreen> {
+class _MapScreenState extends State<MapScreen> {
   final Completer<GoogleMapController> _mapController = Completer();
 
   @override
@@ -44,22 +44,14 @@ class _VisitsScreenState extends State<VisitsScreen> {
         .where((v) => filters.withinExposureDate(v))
         .toList();
 
-    final markers = _getSiteMarkers(filteredSites, filteredVisits);
-    final currentSite = sitesNotifier.currentSite;
-
     return Scaffold(
       body: GoogleMap(
         onMapCreated: (controller) => _mapController.complete(controller),
-        initialCameraPosition: CameraPosition(
-          target: currentSite == null
-              ? currentUserConfig.location.latlng
-              : LatLng(currentSite.lat!, currentSite.lng!),
-          zoom:
-              currentSite == null ? currentUserConfig.location.zoomLevel : 17.0,
-        ),
+        initialCameraPosition:
+            _getCameraPosition(sitesNotifier, currentUserConfig),
         myLocationEnabled: true,
         myLocationButtonEnabled: true,
-        markers: markers,
+        markers: _getSiteMarkers(filteredSites, filteredVisits),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       floatingActionButton: AnimatedFloatingActionButton(
@@ -87,6 +79,21 @@ class _VisitsScreenState extends State<VisitsScreen> {
         colorEndAnimation: Colors.indigo,
         animatedIconData: AnimatedIcons.search_ellipsis,
       ),
+    );
+  }
+
+  CameraPosition _getCameraPosition(
+      SitesNotifier sitesNotifier, UserConfig config) {
+    final currentSite = sitesNotifier.currentSite;
+
+    // reset current site
+    sitesNotifier.currentSite = null;
+
+    return CameraPosition(
+      target: currentSite == null
+          ? config.location.latlng
+          : LatLng(currentSite.lat!, currentSite.lng!),
+      zoom: currentSite == null ? config.location.zoomLevel : 19.0,
     );
   }
 

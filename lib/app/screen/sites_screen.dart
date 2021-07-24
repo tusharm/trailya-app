@@ -127,10 +127,10 @@ class SitesScreen extends StatelessWidget {
       return;
     }
 
-    final tabController = DefaultTabController.of(context)!;
-    tabController.animateTo(0);
-
     final sitesNotifier = Provider.of<SitesNotifier>(context, listen: false);
     sitesNotifier.currentSite = site;
+
+    final tabController = DefaultTabController.of(context)!;
+    tabController.animateTo(0);
   }
 }
