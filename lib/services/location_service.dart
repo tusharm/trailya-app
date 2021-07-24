@@ -1,5 +1,6 @@
 import 'package:location/location.dart';
 import 'package:trailya/model/visit.dart';
+import 'package:trailya/utils/date_util.dart';
 
 ///
 /// Tracks current location and provides a stream of locations where
@@ -12,6 +13,7 @@ class LocationService {
   });
 
   static const int trackingTimeIntervalMs = 1000;
+  static const int visitIntervalThresholdSecs = 60;
   static const double trackingDistanceIntervalMtr = 5;
   static LocationService? instance;
 
@@ -53,24 +55,32 @@ class LocationService {
       return Stream.empty();
     }
 
-    Visit? lastVisited;
+    LocationData? lastLoc;
 
     return location.onLocationChanged
         .map((LocationData loc) {
-          final currentVisit = Visit(loc);
+          final currentLoc = loc;
 
-          if (lastVisited == null ||
-              !currentVisit.longEnoughSince(lastVisited!)) {
-            lastVisited = currentVisit;
+          if (lastLoc == null || !enoughTimeBetween(currentLoc, lastLoc!)) {
+            lastLoc = currentLoc;
             return null;
           }
 
-          lastVisited!.finish();
-          final last = lastVisited;
-          lastVisited = currentVisit;
-          return last;
+          final visit = Visit(
+            loc: lastLoc!,
+            start: asDateTime(lastLoc!.time!.toInt()),
+            end: asDateTime(currentLoc.time!.toInt()),
+          );
+          lastLoc = currentLoc;
+          return visit;
         })
         .where((e) => e != null)
         .cast();
+  }
+
+  bool enoughTimeBetween(LocationData a, LocationData b) {
+    final aTime = asDateTime(a.time!.toInt());
+    final bTime = asDateTime(b.time!.toInt());
+    return aTime.difference(bTime).inSeconds > visitIntervalThresholdSecs;
   }
 }

@@ -35,9 +35,8 @@ class SitesNotifier extends ChangeNotifier {
     final sites = _sites.where((site) {
       if (_selectedExposureDate == null) return true;
 
-      final exposureStart = site.exposureStartTime;
-      return exposureStart.isAfter(_selectedExposureDate!) &&
-          exposureStart.isBefore(_selectedExposureDate!.add(Duration(days: 1)));
+      return site.start.isAfter(_selectedExposureDate!) &&
+          site.start.isBefore(_selectedExposureDate!.add(Duration(days: 1)));
     });
     return UnmodifiableListView(sites);
   }

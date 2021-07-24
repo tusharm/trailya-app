@@ -8,6 +8,9 @@ String formatDate(DateTime datetime, [formatter]) {
   return (formatter ?? displayFormatter).format(datetime);
 }
 
+DateTime asDateTime(int millisSinceEpoch) =>
+    DateTime.fromMillisecondsSinceEpoch(millisSinceEpoch);
+
 int timedMs(VoidCallback fn) {
   final stopwatch = Stopwatch()..start();
   fn();

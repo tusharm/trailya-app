@@ -59,20 +59,21 @@ class LocationNotifier extends ChangeNotifier {
   }
 
   Future<void> _evaluateExposures(List<Site> sites) async {
-
     // determines if a site and a visit overlap in time
-    bool coincide(Visit v, Site s) => !(s.exposureStartTime.isAfter(v.end) ||
-        s.exposureEndTime.isBefore(v.start));
+    bool coincide(Visit v, Site s) =>
+        s.lat != null &&
+        s.lng != null &&
+        !(s.start.isAfter(v.end) || s.end.isBefore(v.start));
 
     // determines geo distance between a site and a visit
     num distanceInMtr(Visit v, Site s) => SphericalUtil.computeDistanceBetween(
           LatLng(v.loc.latitude!, v.loc.longitude!),
-          LatLng(s.latitude!, s.longitude!),
+          LatLng(s.lat!, s.lng!),
         );
 
-
     final exposedVisits = _visits
-        .where((v) => !v.exposed).toList() // filter out all previously exposed visits
+        .where((v) => !v.exposed)
+        .toList() // filter out all previously exposed visits
         .where(
       (visit) {
         // check each visit for exposure

@@ -1,4 +1,6 @@
-class Site {
+import 'package:trailya/model/place.dart';
+
+class Site extends Place {
   Site({
     required this.title,
     required this.suburb,
@@ -6,11 +8,16 @@ class Site {
     required this.state,
     this.postcode,
     required this.addedTime,
-    required this.exposureStartTime,
-    required this.exposureEndTime,
-    this.latitude,
-    this.longitude,
-  });
+    required DateTime exposureStartTime,
+    required DateTime exposureEndTime,
+    required double? latitude,
+    required double? longitude,
+  }) : super(
+          lat: latitude,
+          lng: longitude,
+          start: exposureStartTime,
+          end: exposureEndTime,
+        );
 
   factory Site.fromMap(Map<String, dynamic> data) {
     return Site(
@@ -33,14 +40,9 @@ class Site {
   final String state;
   final int? postcode;
   final DateTime addedTime;
-  final DateTime exposureStartTime;
-  final DateTime exposureEndTime;
-  double? latitude;
-  double? longitude;
 
   String get uniqueId {
     final replaced = address.replaceAll(RegExp(r'[\s,()]'), '_');
-    return '${replaced}_${addedTime.millisecondsSinceEpoch}_${exposureStartTime
-        .millisecondsSinceEpoch}_${exposureEndTime.millisecondsSinceEpoch}';
+    return '${replaced}_${addedTime.millisecondsSinceEpoch}_${start.millisecondsSinceEpoch}_${end.millisecondsSinceEpoch}';
   }
 }

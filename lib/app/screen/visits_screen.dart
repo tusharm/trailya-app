@@ -49,7 +49,7 @@ class _VisitsScreenState extends State<VisitsScreen> {
         initialCameraPosition: CameraPosition(
           target: currentSite == null
               ? currentUserConfig.location.latlng
-              : LatLng(currentSite.latitude!, currentSite.longitude!),
+              : LatLng(currentSite.lat!, currentSite.lng!),
           zoom:
               currentSite == null ? currentUserConfig.location.zoomLevel : 17.0,
         ),
@@ -66,15 +66,16 @@ class _VisitsScreenState extends State<VisitsScreen> {
 
   Set<Marker> _getSiteMarkers() {
     final sites = widget.sitesNotifier.filteredSites
+        .where((site) => (site.lat != null) && (site.lng != null))
         .map((site) => Marker(
               zIndex: 0.5,
               markerId: MarkerId(site.uniqueId),
               icon: Assets.redMarkerIcon!,
-              position: LatLng(site.latitude!, site.longitude!),
+              position: LatLng(site.lat!, site.lng!),
               infoWindow: InfoWindow(
                   title: site.title,
                   snippet:
-                      '${formatDate(site.exposureStartTime)} - ${formatDate(site.exposureEndTime)}\nUpdated at ${formatDate(site.addedTime)}',
+                      '${formatDate(site.start)} - ${formatDate(site.end)}\nUpdated at ${formatDate(site.addedTime)}',
                   onTap: () {
                     showSiteDialog(context: context, site: site);
                   }),
@@ -83,23 +84,24 @@ class _VisitsScreenState extends State<VisitsScreen> {
 
     final visits = widget.locationNotifier.visits
         .where((visit) => _withinFilterWindow(visit.start))
-        .map((visit) => Marker(
-              zIndex: 1.0,
-              markerId: MarkerId(visit.uniqueId),
-              icon: visit.exposed
-                  ? Assets.orangeMarkerIcon!
-                  : Assets.greenMarkerIcon!,
-              position: widget.asLatLng(visit.loc),
-              infoWindow: InfoWindow(
+        .map(
+          (visit) => Marker(
+            zIndex: 1.0,
+            markerId: MarkerId(visit.id),
+            icon: visit.exposed
+                ? Assets.orangeMarkerIcon!
+                : Assets.greenMarkerIcon!,
+            position: widget.asLatLng(visit.loc),
+            infoWindow: InfoWindow(
                 title:
                     'You were here ${visit.exposed ? '(possibly exposed!)' : ''}',
                 snippet:
                     '${formatDate(visit.start)} - ${formatDate(visit.end)}',
-                  onTap: () {
-                    showVisitDialog(context: context, visit: visit);
-                  }),
-              ),
-            );
+                onTap: () {
+                  showVisitDialog(context: context, visit: visit);
+                }),
+          ),
+        );
 
     sites.addAll(visits);
     return sites;

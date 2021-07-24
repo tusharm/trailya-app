@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:collection/collection.dart';
 import 'package:trailya/app/widgets/date_filter_fab.dart';
+import 'package:trailya/app/widgets/dialog.dart';
 import 'package:trailya/model/site.dart';
 import 'package:trailya/model/sites_notifier.dart';
 import 'package:trailya/utils/date_util.dart';
@@ -65,9 +66,9 @@ class SitesScreen extends StatelessWidget {
           title: Text(site.title),
           subtitle: Text(
             '${site.address}, ${site.suburb}, ${site.state}$postcodeText\n'
-            '${formatDate(site.exposureStartTime)} - ${formatDate(site.exposureEndTime)}',
+            '${formatDate(site.start)} - ${formatDate(site.end)}',
           ),
-          onTap: () => _showOnMap(context, site),
+          onTap: () async => _showOnMap(context, site),
         );
       }).toList(),
     );
@@ -79,14 +80,23 @@ class SitesScreen extends StatelessWidget {
       if (result == 0) {
         result = a.title.compareTo(b.title);
         if (result == 0) {
-          result = b.exposureStartTime.compareTo(a.exposureStartTime);
+          result = b.start.compareTo(a.end);
         }
       }
       return result;
     });
   }
 
-  void _showOnMap(BuildContext context, Site site) {
+  void _showOnMap(BuildContext context, Site site) async {
+    if (site.lat == null || site.lng == null) {
+      await showAlertDialog(
+        context,
+        title: site.title,
+        content: 'No geolocation info to show on map',
+        defaultActionText: 'OK',
+      );
+    }
+
     final tabController = DefaultTabController.of(context)!;
     tabController.animateTo(0);
 

@@ -52,7 +52,7 @@ Future<bool?> showSiteDialog({
                     height: 12.0,
                   ),
                   Text(
-                    '${formatDate(site.exposureStartTime)} to ${formatDate(site.exposureEndTime)}',
+                    '${formatDate(site.start)} to ${formatDate(site.end)}',
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(
@@ -88,7 +88,7 @@ Future<bool?> showSiteDialog({
                     height: 12.0,
                   ),
                   Text(
-                    '${site.latitude!.toStringAsFixed(3)}, ${site.longitude!.toStringAsFixed(3)}',
+                    '${site.lat!.toStringAsFixed(3)}, ${site.lng!.toStringAsFixed(3)}',
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(
@@ -126,11 +126,8 @@ Future<bool?> showVisitDialog({
                 if (visit.exposed)
                   Text(
                     '(possible exposure)',
-                    style: TextStyle(
-                      color: Colors.red.shade300
-                    ),
+                    style: TextStyle(color: Colors.red.shade300),
                     textAlign: TextAlign.center,
-
                   ),
               ],
             ),

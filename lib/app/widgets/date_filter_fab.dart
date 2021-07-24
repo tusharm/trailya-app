@@ -18,8 +18,8 @@ class DateFilterFAB extends StatelessWidget {
   }
 
   Future<void> _onFabPressed(BuildContext context) async {
-    final sortedExposureStartTimes = sitesNotifier.sites.map((e) =>
-    e.exposureStartTime).toList();
+    final sortedExposureStartTimes =
+        sitesNotifier.sites.map((e) => e.start).toList();
 
     sortedExposureStartTimes.sort();
 
@@ -28,12 +28,12 @@ class DateFilterFAB extends StatelessWidget {
         helpText: 'Select exposure date',
         cancelText: 'Clear',
         confirmText: 'Apply',
-        initialDate: sitesNotifier.selectedExposureDate ??
-            sortedExposureStartTimes.last,
+        initialDate:
+            sitesNotifier.selectedExposureDate ?? sortedExposureStartTimes.last,
         firstDate: DateTime.now().subtract(Duration(days: 30)),
         lastDate: DateTime.now(),
         selectableDayPredicate: (datetime) =>
-        !datetime.isBefore(sortedExposureStartTimes.first) &&
+            !datetime.isBefore(sortedExposureStartTimes.first) &&
             !datetime.isAfter(sortedExposureStartTimes.last));
 
     sitesNotifier.selectedExposureDate = date;

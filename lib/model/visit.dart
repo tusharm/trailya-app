@@ -1,20 +1,31 @@
 import 'dart:math';
 
 import 'package:location/location.dart';
+import 'package:trailya/model/place.dart';
+import 'package:trailya/utils/date_util.dart';
 
-class Visit {
-  Visit(this.loc, {int? id}) {
+class Visit extends Place {
+  Visit({
+    required this.loc,
+    required DateTime start,
+    required DateTime end,
+    int? id,
+  }) : super(
+          lat: loc.latitude,
+          lng: loc.longitude,
+          start: start,
+          end: end,
+        ) {
     _id = id ?? random.nextInt(1 << 30);
-    _startTime = loc.time!;
   }
 
   static final Random random = Random();
-  static const int trackingMinStaySec = 60;
-
   final LocationData loc;
+
   late final int _id;
-  late final double _startTime;
-  double? _endTime;
+
+  String get id => _id.toString();
+
   int _exposed = 0;
 
   bool get exposed => _exposed == 1;
@@ -23,27 +34,17 @@ class Visit {
     _exposed = exposed ? 1 : 0;
   }
 
-  String get uniqueId => _id.toString();
-
-  DateTime get start => DateTime.fromMillisecondsSinceEpoch(_startTime.toInt());
-
-  DateTime get end => DateTime.fromMillisecondsSinceEpoch(_endTime!.toInt());
-
-  void finish({int? msSinceEpoch}) {
-    final time = (msSinceEpoch == null)
-        ? DateTime.now().millisecondsSinceEpoch
-        : msSinceEpoch;
-    _endTime = time.toDouble();
-  }
-
   // Used to restore from local datastore
   static Visit fromMap(Map<String, dynamic> data) {
     final location = LocationData.fromMap(data);
 
-    final visit = Visit(location, id: data['id']!.toInt());
-    visit.exposed = data['exposed']!.toInt() == 1;
-    visit.finish(msSinceEpoch: data['end_time']!.toInt());
-
+    final visit = Visit(
+      loc: location,
+      start: asDateTime(data['time'].toInt()),
+      end: asDateTime(data['end_time'].toInt()),
+      id: data['id'].toInt(),
+    );
+    visit._exposed = data['exposed'].toInt();
     return visit;
   }
 
@@ -56,28 +57,19 @@ class Visit {
         'speed': loc.speed,
         'speed_accuracy': loc.speedAccuracy,
         'heading': loc.heading,
-        'time': loc.time,
-        'end_time': _endTime,
+        'time': start.millisecondsSinceEpoch,
+        'end_time': end.millisecondsSinceEpoch,
         'exposed': _exposed,
       };
 
-  bool longEnoughSince(Visit other) {
-    DateTime asDateTime(double millisSinceEpoch) =>
-        DateTime.fromMillisecondsSinceEpoch(millisSinceEpoch.toInt());
-
-    final delta =
-        asDateTime(_startTime).difference(asDateTime(other._startTime));
-    return delta.inSeconds > trackingMinStaySec;
-  }
-
   @override
   String toString() {
-    return """
+    return '''
     Location Data:
       lat/lng: ${loc.latitude}/${loc.longitude}
       exposed: $exposed
-      startTime: ${DateTime.fromMillisecondsSinceEpoch(_startTime.toInt())}
-      endTime: ${(_endTime == null) ? '' : DateTime.fromMillisecondsSinceEpoch(_endTime!.toInt())}
-    """;
+      startTime: $start
+      endTime: $end
+    ''';
   }
 }

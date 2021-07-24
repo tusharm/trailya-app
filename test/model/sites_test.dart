@@ -13,11 +13,13 @@ void main() {
       exposureEndTime: aTime.subtract(Duration(hours: 1)),
       exposureStartTime: aTime.subtract(Duration(hours: 2)),
       state: 'NSW',
+      longitude: null,
+      latitude: null,
     );
 
     expect(
         site.uniqueId,
         equals(
-            '201__B___Elizabeth_Str_${aTime.millisecondsSinceEpoch}_${site.exposureStartTime.millisecondsSinceEpoch}_${site.exposureEndTime.millisecondsSinceEpoch}'));
+            '201__B___Elizabeth_Str_${aTime.millisecondsSinceEpoch}_${site.start.millisecondsSinceEpoch}_${site.end.millisecondsSinceEpoch}'));
   });
 }
