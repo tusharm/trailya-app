@@ -1,4 +1,4 @@
-import 'package:trailya/services/visits_store.dart';
+import 'package:trailya/stores/visits_store.dart';
 import 'package:workmanager/workmanager.dart';
 
 const visitsCleanupTask = 'visitsCleanupTask';

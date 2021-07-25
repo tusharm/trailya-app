@@ -8,19 +8,19 @@ import 'package:trailya/model/site.dart';
 import 'package:trailya/model/sites_notifier.dart';
 import 'package:trailya/model/visit.dart';
 import 'package:trailya/services/location_service.dart';
-import 'package:trailya/services/visits_store.dart';
+import 'package:trailya/stores/visits_store.dart';
 
 class LocationNotifier extends ChangeNotifier {
   LocationNotifier._({
     required this.locationService,
     required this.visitsStore,
   }) {
-    streamSubscription = locationService.visits().listen(_recordVisit);
-
     visitsStore.all().then((List<Visit> existingVisits) {
       _visits.addAll(existingVisits);
       notifyListeners();
     });
+
+    streamSubscription = locationService.visits().listen(_recordVisit);
   }
 
   static final exposureDistanceMts = 50;

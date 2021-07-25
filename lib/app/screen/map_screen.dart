@@ -44,14 +44,16 @@ class _MapScreenState extends State<MapScreen> {
         .where((v) => filters.withinExposureDate(v))
         .toList();
 
+    final markers = _getSiteMarkers(filteredSites, filteredVisits);
+    final cameraPosition = _getCameraPosition(sitesNotifier, currentUserConfig);
+
     return Scaffold(
       body: GoogleMap(
         onMapCreated: (controller) => _mapController.complete(controller),
-        initialCameraPosition:
-            _getCameraPosition(sitesNotifier, currentUserConfig),
+        initialCameraPosition: cameraPosition,
         myLocationEnabled: true,
         myLocationButtonEnabled: true,
-        markers: _getSiteMarkers(filteredSites, filteredVisits),
+        markers: markers,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       floatingActionButton: AnimatedFloatingActionButton(

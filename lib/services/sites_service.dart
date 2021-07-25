@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mock_data/mock_data.dart';
 import 'package:trailya/model/site.dart';
-import 'package:trailya/model/user_config.dart';
+import 'package:trailya/model/user_location.dart';
 
 class SitesService {
   static const trackingPeriod = 15;
@@ -49,7 +49,10 @@ class SitesServiceStub extends SitesService {
       await Future.delayed(Duration(seconds: 10));
 
       final latlng = mockLocation(
-          Location.NSW.latlng.latitude, Location.NSW.latlng.longitude, 100000);
+        UserLocation.NSW.latlng.latitude,
+        UserLocation.NSW.latlng.longitude,
+        100000,
+      );
       final startTime = DateTime.now().subtract(Duration(days: 3, hours: 5));
       final endTime = startTime.add(Duration(hours: 5));
 

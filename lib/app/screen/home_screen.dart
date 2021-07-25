@@ -12,10 +12,10 @@ import 'package:trailya/model/sites_notifier.dart';
 import 'package:trailya/model/user_config.dart';
 import 'package:trailya/services/auth.dart';
 import 'package:trailya/services/background.dart';
-import 'package:trailya/services/config_store.dart';
 import 'package:trailya/services/location_service.dart';
 import 'package:trailya/services/message_service.dart';
-import 'package:trailya/services/visits_store.dart';
+import 'package:trailya/stores/config_store.dart';
+import 'package:trailya/stores/visits_store.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -102,8 +102,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<_Services> _init(User user) async {
     await scheduleBackgroundJob();
-    final locationService = await LocationService.create();
-    final visitsStore = await VisitsStore.create();
 
     // load UserConfig from local store
     final configStore = await ConfigStore.create();
@@ -112,6 +110,13 @@ class _HomeScreenState extends State<HomeScreen> {
       configStore.save(userConfig);
     });
 
+    final locationService =
+        await LocationService.create(userConfig.bgLocationEnabled);
+    userConfig.addListener(() {
+      locationService.update(userConfig);
+    });
+
+    final visitsStore = await VisitsStore.create();
     return _Services(locationService, visitsStore, userConfig);
   }
 

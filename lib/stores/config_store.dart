@@ -6,8 +6,23 @@ import 'package:trailya/model/user_config.dart';
 class ConfigStore {
   ConfigStore({required this.db});
 
+  static final migrations = {
+    1: [
+      '''
+        CREATE TABLE $configTable (
+          id TEXT PRIMARY KEY,
+          location TEXT,
+          enable_crash_report INTEGER
+        )
+       '''
+    ],
+    2: [
+      'ALTER TABLE $configTable ADD COLUMN enable_background_location INTEGER NOT NULL DEFAULT 0;'
+    ]
+  };
+
   static final String configTable = 'config';
-  static final int version = 1;
+  static final int version = 2;
   static ConfigStore? _instance;
 
   static Future<ConfigStore> create() async {
@@ -20,13 +35,20 @@ class ConfigStore {
       path,
       version: version,
       onCreate: (db, newVersion) async {
-        await db.execute('''
-        CREATE TABLE $configTable (
-          id TEXT PRIMARY KEY,
-          location TEXT,
-          enable_crash_report INTEGER
-        )
-        ''');
+        print('Creating db version $newVersion');
+        for (var i = 1; i <= newVersion; ++i) {
+          for (var sql in migrations[i]!) {
+            await db.execute(sql);
+          }
+        }
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        print('Upgrading db version from $oldVersion to $newVersion');
+        for (var i = oldVersion + 1; i <= newVersion; ++i) {
+          for (var sql in migrations[i]!) {
+            await db.execute(sql);
+          }
+        }
       },
     );
 

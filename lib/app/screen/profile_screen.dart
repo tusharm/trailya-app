@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:trailya/model/user_config.dart';
+import 'package:trailya/model/user_location.dart';
 import 'package:trailya/services/auth.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -31,6 +32,8 @@ class ProfileScreen extends StatelessWidget {
             _buildUserInfo(user),
             SizedBox(height: 10),
             _buildStateSelector(),
+            SizedBox(height: 10),
+            _buildBackgroundLocationSwitch(),
             SizedBox(height: 10),
             _buildCrashReportSwitch(),
           ],
@@ -86,19 +89,20 @@ class ProfileScreen extends StatelessWidget {
           'Choose preferred location',
           textAlign: TextAlign.left,
           style: TextStyle(
-            fontSize: 20,
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
           ),
         ),
         SizedBox(height: 20),
-        RadioListTile<Location>(
-          title: Text('${Location.NSW}'),
-          value: Location.NSW,
+        RadioListTile<UserLocation>(
+          title: Text('${UserLocation.NSW}'),
+          value: UserLocation.NSW,
           groupValue: config.location,
           onChanged: _onChanged,
         ),
-        RadioListTile<Location>(
-          title: Text('${Location.VIC}'),
-          value: Location.VIC,
+        RadioListTile<UserLocation>(
+          title: Text('${UserLocation.VIC}'),
+          value: UserLocation.VIC,
           groupValue: config.location,
           onChanged: _onChanged,
         ),
@@ -111,12 +115,16 @@ class ProfileScreen extends StatelessWidget {
   Widget _buildCrashReportSwitch() {
     final widget = ListTile(
       isThreeLine: true,
-      title: Text(
-        'Crash reporting enabled',
-        style: TextStyle(
-          fontSize: 20,
+      title: Padding(
+        padding: EdgeInsets.only(bottom: 8.0),
+        child: Text(
+          'Enable crash reporting',
+          style: TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+          ),
+          textAlign: TextAlign.start,
         ),
-        textAlign: TextAlign.start,
       ),
       subtitle: Text(
         'Send crash reports to developers for efficient crash troubleshooting',
@@ -125,6 +133,32 @@ class ProfileScreen extends StatelessWidget {
         value: config.crashReportEnabled,
         activeColor: Colors.indigoAccent,
         onChanged: (value) => config.crashReportEnabled = value,
+      ),
+    );
+    return _withinCard(widget, Colors.white);
+  }
+
+  Widget _buildBackgroundLocationSwitch() {
+    final widget = ListTile(
+      isThreeLine: true,
+      title: Padding(
+        padding: const EdgeInsets.only(bottom: 8.0),
+        child: Text(
+          'Enable background location',
+          style: TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+          ),
+          textAlign: TextAlign.start,
+        ),
+      ),
+      subtitle: Text(
+        'Allow app to track your locations in the background, even when it\' not being used actively. Please select "Allow all the time" from system settings.',
+      ),
+      trailing: Switch(
+        value: config.bgLocationEnabled,
+        activeColor: Colors.indigoAccent,
+        onChanged: (value) => config.bgLocationEnabled = value,
       ),
     );
     return _withinCard(widget, Colors.white);
@@ -143,7 +177,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  void _onChanged(Location? value) {
+  void _onChanged(UserLocation? value) {
     config.location = value;
   }
 }

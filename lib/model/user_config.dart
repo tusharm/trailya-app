@@ -1,44 +1,7 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-
-class Location {
-  Location._(
-      {required this.state, required this.latlng, required this.zoomLevel});
-
-  static Location NSW = Location._(
-    state: 'NSW',
-    latlng: LatLng(-33.94567321973889, 146.90911933779716),
-    zoomLevel: 5.5,
-  );
-
-  static Location VIC = Location._(
-    state: 'VIC',
-    latlng: LatLng(-37.30508110308386, 145.3751502558589),
-    zoomLevel: 6.0,
-  );
-
-  final String state;
-  final LatLng latlng;
-  final double zoomLevel;
-
-  @override
-  String toString() {
-    return state;
-  }
-
-  static Location fromString(String str) {
-    if (NSW.state.compareTo(str) == 0) {
-      return NSW;
-    } else if (VIC.state.compareTo(str) == 0) {
-      return VIC;
-    } else {
-      throw ArgumentError.value(
-          str, 'Invalid argument to Location.fromString()');
-    }
-  }
-}
+import 'package:trailya/model/user_location.dart';
 
 class UserConfig extends ChangeNotifier {
   UserConfig({
@@ -46,17 +9,19 @@ class UserConfig extends ChangeNotifier {
   });
 
   final String id;
-  bool _crashReportEnabled = !kDebugMode;
-  Location _location = Location.NSW;
 
-  Location get location => _location;
+  UserLocation _location = UserLocation.NSW;
 
-  bool get crashReportEnabled => _crashReportEnabled;
+  UserLocation get location => _location;
 
   set location(loc) {
     _location = loc;
     notifyListeners();
   }
+
+  bool _crashReportEnabled = !kDebugMode;
+
+  bool get crashReportEnabled => _crashReportEnabled;
 
   set crashReportEnabled(bool enabled) {
     _crashReportEnabled = enabled;
@@ -64,16 +29,28 @@ class UserConfig extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool _bgLocationEnabled = false;
+
+  bool get bgLocationEnabled => _bgLocationEnabled;
+
+  set bgLocationEnabled(bool enabled) {
+    print('Background location enabled? ${enabled}');
+    _bgLocationEnabled = enabled;
+    notifyListeners();
+  }
+
   Map<String, dynamic> toMap() => {
         'id': id,
         'enable_crash_report': _crashReportEnabled ? 1 : 0,
+        'enable_background_location': _bgLocationEnabled ? 1 : 0,
         'location': _location.state,
       };
 
   static UserConfig fromMap(Map<String, dynamic> data) {
     final userConfig = UserConfig(id: data['id'].toString());
-    userConfig._location = Location.fromString(data['location']);
+    userConfig._location = UserLocation.fromString(data['location']);
     userConfig._crashReportEnabled = data['enable_crash_report'].toInt() == 1;
+    userConfig._bgLocationEnabled = data['enable_background_location'].toInt() == 1;
 
     return userConfig;
   }

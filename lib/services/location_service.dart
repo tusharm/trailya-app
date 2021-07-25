@@ -1,4 +1,5 @@
 import 'package:location/location.dart';
+import 'package:trailya/model/user_config.dart';
 import 'package:trailya/model/visit.dart';
 import 'package:trailya/utils/date_util.dart';
 
@@ -13,14 +14,14 @@ class LocationService {
   });
 
   static const int trackingTimeIntervalMs = 1000;
-  static const int visitIntervalThresholdSecs = 60;
+  static const int visitIntervalThresholdMs = 60 * 1000;
   static const double trackingDistanceIntervalMtr = 5;
   static LocationService? instance;
 
   final Location location;
   final enabled;
 
-  static Future<LocationService> create() async {
+  static Future<LocationService> create(bool bgLocationEnabled) async {
     final location = Location();
 
     final enabled = await location.requestService();
@@ -32,6 +33,8 @@ class LocationService {
           interval: trackingTimeIntervalMs,
           distanceFilter: trackingDistanceIntervalMtr,
         );
+
+        await location.enableBackgroundMode(enable: bgLocationEnabled);
 
         return LocationService._(
           enabled: true,
@@ -81,6 +84,13 @@ class LocationService {
   bool enoughTimeBetween(LocationData a, LocationData b) {
     final aTime = asDateTime(a.time!.toInt());
     final bTime = asDateTime(b.time!.toInt());
-    return aTime.difference(bTime).inSeconds > visitIntervalThresholdSecs;
+    return aTime.difference(bTime).inMilliseconds > visitIntervalThresholdMs;
+  }
+
+  Future<void> update(UserConfig userConfig) async {
+    final bgEnabled = await location.isBackgroundModeEnabled();
+    if (bgEnabled != userConfig.bgLocationEnabled) {
+      await location.enableBackgroundMode(enable: userConfig.bgLocationEnabled);
+    }
   }
 }
