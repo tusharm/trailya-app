@@ -1,14 +1,14 @@
 # trailya
 
-<img src="doc/images/trailya-icon.png" alt="trailya" width="100"/> 
+<img src="doc/images/trailya-icon.png" alt="trailya" width="100"/>
 
-Mobile app to track COVID exposure sites in Australia and notify user if they are potentially exposed. 
+Mobile app to track COVID exposure sites in Australia and notify user if they are potentially exposed.
 
 [Privacy Policy](./PRIVACY.md)
 
-*Twitter*: [@aus_trailya](https://twitter.com/aus_trailya)
+_Twitter_: [@aus_trailya](https://twitter.com/aus_trailya)
 
-*Status*: Beta testing. Please reply on the twitter handle if you want to be an early tester.
+_Status_: Beta testing. Please reply on the twitter handle if you want to be an early tester.
 
 ### Why is it needed?
 
@@ -32,17 +32,9 @@ A privacy-focussed mobile app that:
 
 ### Screenshots
 
-| Exposure Site List                                                          | Sites on map                                                            | Site                                                    |
-| --------------------------------------------------------------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------- |
-| <img src="doc/images/sites-list.png" alt="Exposure Site List" width="150"/> | <img src="doc/images/sites-on-map.png" alt="Sites on map" width="150"/> | <img src="doc/images/site.png" alt="Site" width="150"/> |
-
-| Site Details                                                            | My visits                                                       | My exposures                                                            |
-| ----------------------------------------------------------------------- | --------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| <img src="doc/images/site-details.png" alt="Site Details" width="150"/> | <img src="doc/images/my-visit.png" alt="My visit" width="150"/> | <img src="doc/images/my-exposed-visit.png" alt="My visit" width="150"/> |
-
-| Profile                                                       |
-| ------------------------------------------------------------- |
-| <img src="doc/images/profile.png" alt="Profile" width="150"/> |
+| Demo                                                                          |
+| ----------------------------------------------------------------------------- |
+| <img src="doc/images/trailya_demo.gif" alt="Exposure Site List" width="200"/> |
 
 ### Design
 
