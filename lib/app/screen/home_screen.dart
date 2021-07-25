@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
 import 'package:trailya/app/screen/map_screen.dart';
 import 'package:trailya/app/screen/profile_screen.dart';
 import 'package:trailya/app/screen/sites_screen.dart';
+import 'package:trailya/app/widgets/custom_menu_button.dart';
 import 'package:trailya/app/widgets/dialog.dart';
 import 'package:trailya/app/widgets/waiting.dart';
 import 'package:trailya/model/filters.dart';
@@ -73,11 +75,10 @@ class _HomeScreenState extends State<HomeScreen> {
           elevation: 5.0,
           toolbarHeight: 120,
           actions: [
-            IconButton(
-              icon: Icon(Icons.logout_rounded),
-              tooltip: 'Logout',
-              onPressed: () => _confirmSignOut(context),
-            ),
+            CustomMenuButton(
+              onLogout: () => _confirmSignOut(context),
+              onPrivacyClick: _launchPrivacyPolicy,
+            )
           ],
           bottom: TabBar(
             tabs: [
@@ -144,6 +145,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (didRequestSignOut == true) {
       await _signOut(context);
+    }
+  }
+
+  void _launchPrivacyPolicy() async {
+    final url = 'https://github.com/tusharm/trailya-app/blob/main/PRIVACY.md';
+
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch Privacy Policy link';
     }
   }
 

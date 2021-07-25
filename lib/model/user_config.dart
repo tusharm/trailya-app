@@ -34,7 +34,6 @@ class UserConfig extends ChangeNotifier {
   bool get bgLocationEnabled => _bgLocationEnabled;
 
   set bgLocationEnabled(bool enabled) {
-    print('Background location enabled? ${enabled}');
     _bgLocationEnabled = enabled;
     notifyListeners();
   }
