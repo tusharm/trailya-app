@@ -87,7 +87,6 @@ class ProfileScreen extends StatelessWidget {
       children: [
         Text(
           'Choose preferred location',
-          textAlign: TextAlign.left,
           style: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.bold,
@@ -116,7 +115,7 @@ class ProfileScreen extends StatelessWidget {
     final widget = ListTile(
       isThreeLine: true,
       title: Padding(
-        padding: EdgeInsets.only(bottom: 8.0),
+        padding: EdgeInsets.only(bottom: 16.0),
         child: Text(
           'Enable crash reporting',
           style: TextStyle(
@@ -128,6 +127,7 @@ class ProfileScreen extends StatelessWidget {
       ),
       subtitle: Text(
         'Send crash reports to developers for efficient crash troubleshooting',
+        style: TextStyle(color: Colors.black87),
       ),
       trailing: Switch(
         value: config.crashReportEnabled,
@@ -142,7 +142,7 @@ class ProfileScreen extends StatelessWidget {
     final widget = ListTile(
       isThreeLine: true,
       title: Padding(
-        padding: const EdgeInsets.only(bottom: 8.0),
+        padding: const EdgeInsets.only(bottom: 16.0),
         child: Text(
           'Enable background location',
           style: TextStyle(
@@ -153,7 +153,10 @@ class ProfileScreen extends StatelessWidget {
         ),
       ),
       subtitle: Text(
-        'Allow app to track your locations in the background, even when it\' not being used actively. Please select "Allow all the time" from system settings.',
+        '''
+        App will use location in the background to track your visits, even when it\'s not being used actively.\n\nPlease choose "Allow all the time" from system settings.
+        '''.trim(),
+        style: TextStyle(color: Colors.black87),
       ),
       trailing: Switch(
         value: config.bgLocationEnabled,

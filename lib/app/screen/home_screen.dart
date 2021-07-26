@@ -25,6 +25,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  _Services? services;
   MessageService? messageService;
 
   @override
@@ -42,15 +43,16 @@ class _HomeScreenState extends State<HomeScreen> {
             return Waiting();
           }
 
-          final services = snapshot.data!;
+          services = snapshot.data!;
+
           return MultiProvider(
             providers: [
               ChangeNotifierProvider<UserConfig>.value(
-                value: services.userConfig,
+                value: services!.userConfig,
               ),
-              Provider.value(value: services.locationService),
+              Provider.value(value: services!.locationService),
               SitesNotifier.create(),
-              LocationNotifier.create(services.visitsStore),
+              LocationNotifier.create(services!.visitsStore),
               ChangeNotifierProvider(create: (_) => Filters()),
             ],
             builder: (context, _) => buildContent(context),
@@ -164,6 +166,10 @@ class _HomeScreenState extends State<HomeScreen> {
       messageService!.dispose();
     }
 
+    if (services != null) {
+      services!.dispose();
+    }
+
     super.dispose();
   }
 }
@@ -174,4 +180,8 @@ class _Services {
   final LocationService locationService;
   final VisitsStore visitsStore;
   final UserConfig userConfig;
+
+  Future<void> dispose() async {
+    await locationService.dispose();
+  }
 }

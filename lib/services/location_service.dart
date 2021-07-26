@@ -93,4 +93,11 @@ class LocationService {
       await location.enableBackgroundMode(enable: userConfig.bgLocationEnabled);
     }
   }
+
+  Future<void> dispose() async {
+    final bgEnabled = await location.isBackgroundModeEnabled();
+    if (bgEnabled) {
+      await location.enableBackgroundMode(enable: false);
+    }
+  }
 }
