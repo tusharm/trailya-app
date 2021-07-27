@@ -9,6 +9,10 @@ Future<void> showAboutDialog(
   BuildContext context,
   PackageInfo packageInfo,
 ) async {
+  final versionInfo =
+      'Version: v${packageInfo.version}(${packageInfo.buildNumber})';
+  final developerInfo = 'developer@trailya.app';
+
   return showAlertDialog(
     context,
     title: packageInfo.appName,
@@ -19,12 +23,10 @@ Future<void> showAboutDialog(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(
-              'Version: v${packageInfo.version}(${packageInfo.buildNumber})',
-            ),
+            Text(versionInfo),
             SizedBox(height: 8.0),
             Text(
-              'developer@trailya.app',
+              developerInfo,
               style: TextStyle(
                 fontSize: 15,
                 color: Colors.black54,
