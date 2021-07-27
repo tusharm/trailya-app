@@ -1,12 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
 import 'package:trailya/app/screen/map_screen.dart';
 import 'package:trailya/app/screen/profile_screen.dart';
 import 'package:trailya/app/screen/sites_screen.dart';
 import 'package:trailya/app/widgets/custom_menu_button.dart';
-import 'package:trailya/app/widgets/dialog.dart';
+import 'package:trailya/app/widgets/dialog.dart' as dlg;
 import 'package:trailya/app/widgets/waiting.dart';
 import 'package:trailya/model/filters.dart';
 import 'package:trailya/model/location_notifier.dart';
@@ -80,6 +81,8 @@ class _HomeScreenState extends State<HomeScreen> {
             CustomMenuButton(
               onLogout: () => _confirmSignOut(context),
               onPrivacyClick: _launchPrivacyPolicy,
+              onAboutClick: () async =>
+                  await dlg.showAboutDialog(context, services!.packageInfo),
             )
           ],
           bottom: TabBar(
@@ -104,6 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<_Services> _init(User user) async {
+    final packageInfo = await PackageInfo.fromPlatform();
     await scheduleBackgroundJob();
 
     // load UserConfig from local store
@@ -120,7 +124,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     final visitsStore = await VisitsStore.create();
-    return _Services(locationService, visitsStore, userConfig);
+    return _Services(locationService, visitsStore, userConfig, packageInfo);
   }
 
   Future<void> _signOut(BuildContext context) async {
@@ -128,7 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
       final auth = Provider.of<FirebaseAuthentication>(context, listen: false);
       await auth.signOut();
     } on Exception catch (e) {
-      await showExceptionAlertDialog(
+      await dlg.showExceptionAlertDialog(
         context,
         title: 'Sign out failed',
         exception: e,
@@ -137,10 +141,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _confirmSignOut(BuildContext context) async {
-    final didRequestSignOut = await showAlertDialog(
+    final didRequestSignOut = await dlg.showAlertDialog(
       context,
       title: 'Logout',
-      content: 'Are you sure that you want to logout?',
+      content: Text('Are you sure that you want to logout?'),
       cancelActionText: 'Cancel',
       defaultActionText: 'Logout',
     );
@@ -175,11 +179,13 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class _Services {
-  _Services(this.locationService, this.visitsStore, this.userConfig);
+  _Services(this.locationService, this.visitsStore, this.userConfig,
+      this.packageInfo);
 
   final LocationService locationService;
   final VisitsStore visitsStore;
   final UserConfig userConfig;
+  final PackageInfo packageInfo;
 
   Future<void> dispose() async {
     await locationService.dispose();

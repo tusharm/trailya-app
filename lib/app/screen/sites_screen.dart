@@ -121,7 +121,7 @@ class SitesScreen extends StatelessWidget {
       await showAlertDialog(
         context,
         title: site.title,
-        content: 'No geolocation info to show on map',
+        content: Text('No geolocation info to show on map'),
         defaultActionText: 'OK',
       );
       return;

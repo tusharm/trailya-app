@@ -1,8 +1,42 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info/package_info.dart';
 import 'package:trailya/model/site.dart';
 import 'package:trailya/model/visit.dart';
 import 'package:trailya/utils/date_util.dart';
+
+Future<void> showAboutDialog(
+  BuildContext context,
+  PackageInfo packageInfo,
+) async {
+  return showAlertDialog(
+    context,
+    title: packageInfo.appName,
+    content: SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              'Version: v${packageInfo.version}(${packageInfo.buildNumber})',
+            ),
+            SizedBox(height: 8.0),
+            Text(
+              'developer@trailya.app',
+              style: TextStyle(
+                fontSize: 15,
+                color: Colors.black54,
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+    defaultActionText: 'OK',
+  );
+}
 
 Future<bool?> showSiteDialog({
   required BuildContext context,
@@ -190,7 +224,7 @@ Future<bool?> showVisitDialog({
 Future showAlertDialog(
   BuildContext context, {
   required String title,
-  required String content,
+  required Widget content,
   String? cancelActionText,
   required String defaultActionText,
 }) =>
@@ -198,7 +232,7 @@ Future showAlertDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(title),
-        content: Text(content),
+        content: content,
         actions: <Widget>[
           if (cancelActionText != null)
             TextButton(
@@ -223,7 +257,7 @@ Future<void> showExceptionAlertDialog(
     showAlertDialog(
       context,
       title: title,
-      content: _message(exception),
+      content: Text(_message(exception)),
       defaultActionText: 'OK',
     );
 

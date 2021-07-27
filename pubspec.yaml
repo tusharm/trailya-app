@@ -38,6 +38,7 @@ dependencies:
   location: ^4.3.0
   maps_toolkit: ^2.0.0
   mock_data: ^2.0.0
+  package_info: ^2.0.2
   path: ^1.8.0
   provider: ^5.0.0
   sqflite: ^2.0.0+3

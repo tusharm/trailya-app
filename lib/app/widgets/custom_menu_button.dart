@@ -1,24 +1,49 @@
-
 import 'package:flutter/material.dart';
 
 class _MenuItem {
   _MenuItem(this.text, this.icon);
 
-  final String text;
-  final IconData icon;
+  final Text text;
+  final Widget icon;
 }
 
 class CustomMenuButton extends StatelessWidget {
   const CustomMenuButton({
     required this.onLogout,
     required this.onPrivacyClick,
+    required this.onAboutClick,
   });
 
-  static final logoutItem = _MenuItem('Log out', Icons.logout);
-  static final privacyItem = _MenuItem('Privacy Policy', Icons.open_in_new);
+  static final logoutItem = _MenuItem(
+    Text('Log out'),
+    Icon(
+      Icons.logout,
+      color: Colors.black,
+      size: 20,
+    ),
+  );
+
+  static final privacyItem = _MenuItem(
+    Text('Privacy Policy'),
+    Icon(
+      Icons.open_in_new,
+      color: Colors.black,
+      size: 20,
+    ),
+  );
+
+  static final aboutItem = _MenuItem(
+    Text('About'),
+    ImageIcon(
+      AssetImage('assets/shoe.png'),
+      color: Colors.black,
+      size: 25,
+    ),
+  );
 
   final VoidCallback onLogout;
   final VoidCallback onPrivacyClick;
+  final VoidCallback onAboutClick;
 
   @override
   Widget build(BuildContext context) {
@@ -29,9 +54,9 @@ class CustomMenuButton extends StatelessWidget {
           value: logoutItem,
           child: Row(
             children: [
-              Icon(logoutItem.icon, color: Colors.black, size: 20),
+              logoutItem.icon,
               SizedBox(width: 12.0),
-              Text(logoutItem.text),
+              logoutItem.text,
             ],
           ),
         ),
@@ -39,21 +64,33 @@ class CustomMenuButton extends StatelessWidget {
           value: privacyItem,
           child: Row(
             children: [
-              Icon(privacyItem.icon, color: Colors.black, size: 20),
+              privacyItem.icon,
               SizedBox(width: 12.0),
-              Text(privacyItem.text),
+              privacyItem.text,
             ],
           ),
         ),
+        PopupMenuItem<_MenuItem>(
+          value: aboutItem,
+          child: Row(
+            children: [
+              aboutItem.icon,
+              SizedBox(width: 12.0),
+              aboutItem.text,
+            ],
+          ),
+        )
       ],
     );
   }
 
   void _onSelection(_MenuItem value) {
-      if (value == logoutItem) {
-        onLogout();
-      } else if (value == privacyItem) {
-        onPrivacyClick();
-      } else {}
+    if (value == logoutItem) {
+      onLogout();
+    } else if (value == privacyItem) {
+      onPrivacyClick();
+    } else if (value == aboutItem) {
+      onAboutClick();
     }
+  }
 }
