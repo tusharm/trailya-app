@@ -2,7 +2,11 @@
 
 <img src="doc/images/trailya-icon.png" alt="trailya" width="100"/>
 
-Mobile app to track COVID exposure sites in Australia and notify user if they are potentially exposed.
+Open-source non-commercial app to track Australian COVID exposure sites and identify the user's possible exposures. 
+
+Uses publicly available datasets:
+- [NSW COVID-19 case locations](https://data.nsw.gov.au/search/dataset/ds-nsw-ckan-0a52e6c1-bc0b-48af-8b45-d791a6d8e289/details)
+- [All Victorian SARS-CoV-2 (COVID-19) current exposure sites](https://discover.data.vic.gov.au/dataset/all-victorian-sars-cov-2-covid-19-current-exposure-sites/resource/afb52611-6061-4a2b-9110-74c920bede77)
 
 [Privacy Policy](./PRIVACY.md)
 
@@ -12,18 +16,19 @@ _Status_: Beta testing. Please reply on the twitter handle if you want to be an 
 
 ### Why is it needed?
 
-- State Health's COVID exposure site updates aren't easy to consume (eg. huge tables on webpages, multiple tweets, PDF files etc.)
-- How do I know if I was exposed (with reasonable confidence)?
+- Health department's COVID exposure site list isn't easy to consume (eg. huge tables on webpages, multiple tweets, PDF files etc.)
+- Getting site update notifications reduces the effort to search
+- Reduce effort/error in identifying if the user was at one of the exposure sites
 
 ### How does this help?
 
 A privacy-focussed mobile app that:
 
-- syncs current exposure sites and shows them on a map and as a list
-- tracks users locations where they have spent more than a minute
-  - visits are shown on the map, to help visualize if there is a possible exposure
-  - visits are stored only on the device (not shared outside); they are removed if older than 15 days
-  - notify if user has been to an exposure site (coming soon)
+- lists exposure sites, shows them on a map, allows filtering based on dates, suburbs etc.
+- notifies about exposure site updates
+- records locations where user spent more than a specific duration (currently 1 min)
+  - uses these "visits" to match against exposure sites
+  - notifies if user could be potentially exposed (coming soon)
 
 #### Notes
 
