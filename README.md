@@ -2,7 +2,7 @@
 
 <img src="doc/images/trailya-icon.png" alt="trailya" width="100"/>
 
-Open-source non-commercial app to track Australian COVID exposure sites and identify the user's possible exposures. 
+Open-source non-commercial app to track Australian COVID exposure sites and identify the user's possible exposures (see [screenshots](https://github.com/tusharm/trailya-app#screenshots)). 
 
 Uses publicly available datasets:
 - [NSW COVID-19 case locations](https://data.nsw.gov.au/search/dataset/ds-nsw-ckan-0a52e6c1-bc0b-48af-8b45-d791a6d8e289/details)
